@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/tusharthapliyal/Documents/OrderCore-OS-Driven-Scheduling-and-DBMS-Backed-Resource-Management-for-Food-Delivery/scheduler",
+      "program": "/Users/tusharthapliyal/Documents/OrderCore-OS-Driven-Scheduling-and-DBMS-Backed-Resource-Management-for-Food-Delivery/scheduler/build/Debug/outDebug"
+    }
+  ]
+}
