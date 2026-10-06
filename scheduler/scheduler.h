@@ -13,5 +13,7 @@ struct Order
 };
 
 void fcfs(Order orders[], int n);
+void sjf(Order orders[], int n);
+void priorityScheduling(Order orders[], int n);
 
 #endif
