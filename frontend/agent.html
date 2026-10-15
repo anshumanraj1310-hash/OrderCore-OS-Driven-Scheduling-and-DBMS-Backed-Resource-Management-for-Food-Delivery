@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delivery Agent - OrderCore</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <h1>Delivery Agent Portal</h1>
+
+    <button onclick="loadAgents()">View Agents</button>
+
+    <div id="agents"></div>
+
+    <script>
+
+        function loadAgents() {
+
+            fetch("http://localhost:3000/agents")
+                .then(response => response.json())
+                .then(data => {
+
+                    let output = "";
+
+                    data.forEach(agent => {
+
+                        output += `
+                            <div>
+                                <h3>Agent ${agent.agent_id}</h3>
+                                <p>Name: ${agent.name}</p>
+                                <p>Status: ${agent.status}</p>
+                                <hr>
+                            </div>
+                        `;
+                    });
+
+                    document.getElementById("agents").innerHTML = output;
+                });
+        }
+
+    </script>
+
+</body>
+</html>

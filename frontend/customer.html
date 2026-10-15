@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer - OrderCore</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <h1>Customer Portal</h1>
+
+    <button onclick="loadOrders()">View Orders</button>
+
+    <div id="orders"></div>
+
+    <script>
+
+        function loadOrders() {
+
+            fetch("http://localhost:3000/orders")
+                .then(response => response.json())
+                .then(data => {
+
+                    let output = "";
+
+                    data.forEach(order => {
+
+                        output += `
+                            <div>
+                                <h3>Order ${order.order_id}</h3>
+                                <p>Customer: ${order.customer_name}</p>
+                                <p>Restaurant: ${order.restaurant_name}</p>
+                                <p>Preparation Time: ${order.prep_time}</p>
+                                <p>Priority: ${order.priority}</p>
+                                <p>Status: ${order.status}</p>
+                                <hr>
+                            </div>
+                        `;
+                    });
+
+                    document.getElementById("orders").innerHTML = output;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+
+    </script>
+
+</body>
+</html>

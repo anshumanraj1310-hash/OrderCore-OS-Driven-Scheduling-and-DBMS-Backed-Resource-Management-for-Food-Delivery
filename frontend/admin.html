@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - OrderCore</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <h1>Admin Portal</h1>
+
+    <button onclick="loadOrders()">View Orders</button>
+
+    <button onclick="loadAgents()">View Agents</button>
+
+    <button onclick="loadDeliveries()">View Deliveries</button>
+
+    <div id="data"></div>
+
+    <script>
+
+        function loadOrders() {
+
+            fetch("http://localhost:3000/orders")
+                .then(response => response.json())
+                .then(data => {
+
+                    let output = "<h2>Orders</h2>";
+
+                    data.forEach(order => {
+
+                        output += `
+                            <p>
+                                Order ${order.order_id}
+                                |
+                                ${order.customer_name}
+                                |
+                                ${order.restaurant_name}
+                                |
+                                Status: ${order.status}
+                            </p>
+                        `;
+                    });
+
+                    document.getElementById("data").innerHTML = output;
+                });
+        }
+
+
+        function loadAgents() {
+
+            fetch("http://localhost:3000/agents")
+                .then(response => response.json())
+                .then(data => {
+
+                    let output = "<h2>Delivery Agents</h2>";
+
+                    data.forEach(agent => {
+
+                        output += `
+                            <p>
+                                ${agent.agent_id}
+                                - ${agent.name}
+                                - ${agent.status}
+                            </p>
+                        `;
+                    });
+
+                    document.getElementById("data").innerHTML = output;
+                });
+        }
+
+
+        function loadDeliveries() {
+
+            fetch("http://localhost:3000/deliveries")
+                .then(response => response.json())
+                .then(data => {
+
+                    let output = "<h2>Deliveries</h2>";
+
+                    data.forEach(delivery => {
+
+                        output += `
+                            <p>
+                                Delivery ${delivery.delivery_id}
+                                |
+                                Order ${delivery.order_id}
+                                |
+                                Agent ${delivery.agent_id}
+                                |
+                                ${delivery.status}
+                            </p>
+                        `;
+                    });
+
+                    document.getElementById("data").innerHTML = output;
+                });
+        }
+
+    </script>
+
+</body>
+</html>

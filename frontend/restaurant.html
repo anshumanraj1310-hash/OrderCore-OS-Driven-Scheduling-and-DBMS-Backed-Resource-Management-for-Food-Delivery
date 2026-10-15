@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurant - OrderCore</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <h1>Restaurant Portal</h1>
+
+    <button onclick="loadOrders()">View Orders</button>
+
+    <div id="orders"></div>
+
+    <script>
+
+        function loadOrders() {
+
+            fetch("http://localhost:3000/orders")
+                .then(response => response.json())
+                .then(data => {
+
+                    let output = "";
+
+                    data.forEach(order => {
+
+                        output += `
+                            <div>
+                                <h3>Order ${order.order_id}</h3>
+
+                                <p>Restaurant: ${order.restaurant_name}</p>
+
+                                <p>Status: ${order.status}</p>
+
+                                <button onclick="updateStatus(${order.order_id}, 'Preparing')">
+                                    Preparing
+                                </button>
+
+                                <button onclick="updateStatus(${order.order_id}, 'Ready')">
+                                    Ready
+                                </button>
+
+                                <hr>
+                            </div>
+                        `;
+                    });
+
+                    document.getElementById("orders").innerHTML = output;
+                });
+        }
+
+
+        function updateStatus(orderId, status) {
+
+            fetch(`http://localhost:3000/orders/${orderId}/status`, {
+
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    status: status
+                })
+
+            })
+            .then(response => response.json())
+            .then(data => {
+
+                alert(data.message);
+
+                loadOrders();
+            });
+        }
+
+    </script>
+
+</body>
+</html>
