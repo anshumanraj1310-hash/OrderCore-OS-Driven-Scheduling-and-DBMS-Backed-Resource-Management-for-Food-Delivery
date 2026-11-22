@@ -1,45 +1,1008 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Delivery Agent - OrderCore</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OrderCore | Delivery Partner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    :root {
+      --blue:       #2563eb;
+      --blue-dark:  #1d4ed8;
+      --blue-light: #eff6ff;
+      --dark:       #0f172a;
+      --green:      #16a34a;
+      --green-bg:   #dcfce7;
+      --amber:      #d97706;
+      --amber-bg:   #fef3c7;
+      --red:        #dc2626;
+      --red-bg:     #fee2e2;
+      --slate:      #64748b;
+      --border:     #e2e8f0;
+      --bg:         #f1f5f9;
+      --card-r:     16px;
+      --input-r:    10px;
+      --shadow:     0 4px 20px rgba(15,23,42,0.07);
+      --shadow-lg:  0 10px 30px rgba(15,23,42,0.13);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* ─── TOAST ─────────────────────────────────────────── */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--dark); color: #fff; padding: 12px 22px;
+      border-radius: 100px; font-size: 13px; font-weight: 700;
+      box-shadow: var(--shadow-lg); z-index: 9999;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+      opacity: 0; white-space: nowrap; max-width: 90vw;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    #toast.success { background: var(--green); }
+    #toast.error   { background: var(--red); }
+
+    /* ─── LOGIN SCREEN ───────────────────────────────────── */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      background: linear-gradient(145deg, #1e3a8a 0%, #0f172a 100%);
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 40px 36px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    }
+
+    .login-hero {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .login-hero .scooter {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 10px;
+      animation: bob 2.4s ease-in-out infinite;
+    }
+    @keyframes bob {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+    .login-hero h1 {
+      font-size: 22px; font-weight: 800; color: var(--dark);
+      letter-spacing: -.5px;
+    }
+    .login-hero p {
+      font-size: 13px; color: var(--slate); margin-top: 4px;
+    }
+
+    .form-label {
+      display: block; font-size: 12px; font-weight: 700;
+      color: #334155; margin-bottom: 6px; letter-spacing: .3px;
+    }
+    .form-input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--border); border-radius: var(--input-r);
+      font-size: 14px; color: var(--dark); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      margin-bottom: 14px;
+    }
+    .form-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    .btn-primary {
+      width: 100%; padding: 13px;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: var(--input-r);
+      font-size: 15px; font-weight: 800; cursor: pointer;
+      transition: background .2s, transform .1s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary:hover  { background: var(--blue-dark); }
+    .btn-primary:active { transform: scale(.98); }
+
+    .login-err {
+      background: var(--red-bg); color: var(--red);
+      padding: 10px 14px; border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      margin-bottom: 14px; display: none;
+    }
+
+    /* Demo chips */
+    .demo-section { margin-top: 22px; }
+    .demo-label {
+      font-size: 11px; font-weight: 700; color: var(--slate);
+      text-transform: uppercase; letter-spacing: .7px;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .demo-label::before, .demo-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .demo-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .demo-chip {
+      flex: 1; min-width: 110px;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: #fff; cursor: pointer;
+      text-align: left; transition: .18s;
+    }
+    .demo-chip:hover {
+      border-color: var(--blue); background: var(--blue-light);
+    }
+    .demo-chip .chip-name {
+      font-size: 12px; font-weight: 700; color: var(--dark);
+      display: block;
+    }
+    .demo-chip .chip-email {
+      font-size: 10.5px; color: var(--slate); display: block; margin-top: 1px;
+    }
+
+    .toggle-link {
+      text-align: center; font-size: 13px; color: var(--slate);
+      margin-top: 18px;
+    }
+    .toggle-link a {
+      color: var(--blue); font-weight: 700; cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Register mode extras */
+    #nameRow { display: none; }
+
+    /* ─── DASHBOARD ──────────────────────────────────────── */
+    #dashboard { display: none; }
+
+    /* TOP BAR */
+    .topbar {
+      background: var(--dark);
+      padding: 0 20px;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.35);
+    }
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .topbar-logo {
+      font-size: 18px; font-weight: 800; color: #fff;
+      letter-spacing: -.5px;
+    }
+    .topbar-logo span { color: var(--blue); }
+    .topbar-sub {
+      font-size: 11px; color: #64748b; font-weight: 600;
+      display: none;
+    }
+
+    .topbar-right {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .rider-name {
+      font-size: 13px; font-weight: 700; color: #e2e8f0;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .rider-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      font-size: 13px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Online toggle pill */
+    .online-toggle {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 100px;
+      padding: 5px 12px; cursor: pointer;
+      transition: .2s;
+      user-select: none;
+    }
+    .online-toggle:hover { background: rgba(255,255,255,.14); }
+    .toggle-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 3px rgba(22,163,74,.25);
+      transition: background .3s, box-shadow .3s;
+      flex-shrink: 0;
+    }
+    .toggle-dot.offline {
+      background: #94a3b8;
+      box-shadow: 0 0 0 3px rgba(148,163,184,.2);
+    }
+    .toggle-label {
+      font-size: 11px; font-weight: 700; color: #e2e8f0;
+      text-transform: uppercase; letter-spacing: .4px;
+    }
+
+    .btn-logout {
+      background: rgba(220,38,38,.15); color: #fca5a5;
+      border: 1px solid rgba(220,38,38,.3);
+      padding: 6px 13px; border-radius: 8px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: .18s;
+    }
+    .btn-logout:hover { background: rgba(220,38,38,.28); color: #fff; }
+
+    /* DASHBOARD CONTENT */
+    .dash-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    /* STATS ROW */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: var(--card-r);
+      padding: 18px 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      border-top: 4px solid var(--border);
+      transition: transform .2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-card.total  { border-top-color: var(--blue); }
+    .stat-card.done   { border-top-color: var(--green); }
+    .stat-card.pend   { border-top-color: var(--amber); }
+    .stat-icon { font-size: 22px; margin-bottom: 6px; }
+    .stat-val  { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1; }
+    .stat-lbl  { font-size: 11px; font-weight: 700; color: var(--slate);
+                 text-transform: uppercase; letter-spacing: .4px; margin-top: 4px; }
+
+    /* SECTION HEADER */
+    .section-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 16px; font-weight: 800; color: var(--dark);
+    }
+    .refresh-btn {
+      background: #fff; border: 1.5px solid var(--border);
+      padding: 7px 14px; border-radius: 8px;
+      font-size: 12px; font-weight: 700; color: var(--slate);
+      cursor: pointer; transition: .18s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .refresh-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .refresh-btn.spinning .spin-icon { animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* DELIVERY CARDS */
+    .deliveries-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .delivery-card {
+      background: #fff;
+      border-radius: var(--card-r);
+      border-left: 4px solid var(--blue);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .delivery-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+    .delivery-card.completed-card {
+      border-left-color: #94a3b8;
+      background: #f8fafc;
+      opacity: .82;
+    }
+
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .order-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--blue-light); color: var(--blue);
+      border: 1px solid #bfdbfe;
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 13px; font-weight: 800;
+    }
+    .completed-card .order-badge {
+      background: #f1f5f9; color: var(--slate); border-color: var(--border);
+    }
+
+    .status-badge {
+      padding: 4px 11px; border-radius: 100px;
+      font-size: 11px; font-weight: 800; letter-spacing: .3px;
+    }
+    .badge-assigned   { background: var(--amber-bg); color: #92400e; border: 1px solid #fde68a; }
+    .badge-out        { background: #dbeafe;         color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge-completed  { background: var(--green-bg); color: #166534; border: 1px solid #bbf7d0; }
+
+    .card-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
+
+    .route-row {
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .route-pin {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--bg); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .route-text {}
+    .route-text strong {
+      display: block; font-size: 13.5px; font-weight: 700; color: var(--dark);
+    }
+    .route-text span {
+      font-size: 12px; color: var(--slate); line-height: 1.4;
+    }
+
+    .items-row {
+      background: #f8fafc; border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 12.5px; color: var(--slate);
+    }
+    .items-row strong { color: var(--dark); font-size: 12px; }
+
+    .time-row {
+      font-size: 11.5px; color: var(--slate);
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    /* ACTION BUTTONS */
+    .card-actions { padding: 0 18px 16px; display: flex; gap: 10px; }
+
+    .btn-action {
+      flex: 1; padding: 11px;
+      border: none; border-radius: 10px;
+      font-size: 13px; font-weight: 800; cursor: pointer;
+      transition: .18s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-start {
+      background: var(--blue); color: #fff;
+    }
+    .btn-start:hover { background: var(--blue-dark); }
+
+    .btn-deliver {
+      background: var(--green); color: #fff;
+    }
+    .btn-deliver:hover { background: #15803d; }
+
+    .btn-action:disabled {
+      background: #e2e8f0; color: #94a3b8; cursor: not-allowed;
+    }
+
+    .done-banner {
+      margin: 0 18px 16px;
+      background: var(--green-bg); color: #166534;
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 13px; font-weight: 800;
+      display: flex; align-items: center; gap: 7px;
+    }
+
+    /* EMPTY STATE */
+    .empty-box {
+      background: #fff; border-radius: var(--card-r);
+      border: 2px dashed var(--border);
+      padding: 52px 24px; text-align: center;
+      color: var(--slate);
+    }
+    .empty-icon { font-size: 44px; margin-bottom: 12px; }
+    .empty-box h3 { font-size: 16px; font-weight: 800; color: var(--dark); margin-bottom: 6px; }
+    .empty-box p  { font-size: 13.5px; }
+
+    /* COMPLETED SECTION toggle */
+    .completed-toggle {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 16px;
+      background: #fff; border-radius: 12px;
+      border: 1.5px solid var(--border);
+      cursor: pointer; margin-bottom: 10px;
+      font-size: 14px; font-weight: 700; color: var(--dark);
+      transition: .18s;
+    }
+    .completed-toggle:hover { border-color: var(--blue); color: var(--blue); }
+    .toggle-arrow { font-size: 12px; transition: transform .25s; }
+    .toggle-arrow.open { transform: rotate(180deg); }
+
+    .completed-list { display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+
+    /* LOADING SKELETON */
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 10px; height: 18px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* RESPONSIVE */
+    @media (max-width: 480px) {
+      .topbar-sub { display: none; }
+      .dash-content { padding: 16px 12px 70px; }
+      .stat-val { font-size: 24px; }
+      .login-card { padding: 30px 20px; }
+    }
+    @media (min-width: 640px) {
+      .topbar-sub { display: block; }
+    }
+  </style>
+</head>
 <body>
 
-    <h1>Delivery Agent Portal</h1>
+<!-- ═══════════════════════════════════════════
+     LOGIN SCREEN
+═══════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-hero">
+      <span class="scooter">🛵</span>
+      <h1>OrderCore Delivery Partner</h1>
+      <p>Sign in to your rider dashboard</p>
+    </div>
 
-    <button onclick="loadAgents()">View Agents</button>
+    <div class="login-err" id="loginErr"></div>
 
-    <div id="agents"></div>
+    <form id="loginForm" onsubmit="handleAuth(event)">
+      <!-- register-only field -->
+      <div id="nameRow">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" type="text" id="regName" placeholder="e.g. Arun Kumar">
+      </div>
 
-    <script>
+      <label class="form-label">Email Address</label>
+      <input class="form-input" type="email" id="authEmail" placeholder="agenta@example.com" required>
 
-        function loadAgents() {
+      <label class="form-label">Password</label>
+      <input class="form-input" type="password" id="authPassword" placeholder="••••••••" required>
 
-            fetch("http://localhost:3000/agents")
-                .then(response => response.json())
-                .then(data => {
+      <button class="btn-primary" type="submit" id="authSubmitBtn">
+        <span>🔑</span> <span id="authBtnText">Sign In</span>
+      </button>
+    </form>
 
-                    let output = "";
+    <div class="toggle-link">
+      <span id="toggleMsg">New delivery partner?</span>
+      <a id="toggleLink" onclick="toggleMode()">Register here</a>
+    </div>
 
-                    data.forEach(agent => {
+    <!-- Demo rider chips (login mode only) -->
+    <div class="demo-section" id="demoSection">
+      <div class="demo-label">Quick Demo Login</div>
+      <div class="demo-chips">
+        <div class="demo-chip" onclick="fillDemo('agenta@example.com','Agent A (Arun)')">
+          <span class="chip-name">🛵 Agent A — Arun</span>
+          <span class="chip-email">agenta@example.com</span>
+        </div>
+        <div class="demo-chip" onclick="fillDemo('agentb@example.com','Agent B (Bikram)')">
+          <span class="chip-name">🛵 Agent B — Bikram</span>
+          <span class="chip-email">agentb@example.com</span>
+        </div>
+        <div class="demo-chip" onclick="fillDemo('agentc@example.com','Agent C (Chandan)')">
+          <span class="chip-name">🛵 Agent C — Chandan</span>
+          <span class="chip-email">agentc@example.com</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-                        output += `
-                            <div>
-                                <h3>Agent ${agent.agent_id}</h3>
-                                <p>Name: ${agent.name}</p>
-                                <p>Status: ${agent.status}</p>
-                                <hr>
-                            </div>
-                        `;
-                    });
+<!-- ═══════════════════════════════════════════
+     DASHBOARD
+═══════════════════════════════════════════ -->
+<div id="dashboard">
 
-                    document.getElementById("agents").innerHTML = output;
-                });
+  <!-- TOP BAR -->
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div>
+        <div class="topbar-logo"><span>Order</span>Core</div>
+        <div class="topbar-sub">Delivery Partner</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="rider-name">
+        <div class="rider-avatar" id="riderAvatar">A</div>
+        <span id="riderNameEl" style="display:none; font-size:13px;"></span>
+      </div>
+
+      <div class="online-toggle" id="onlineToggle" onclick="toggleOnline()">
+        <div class="toggle-dot" id="toggleDot"></div>
+        <span class="toggle-label" id="toggleLabel">Online</span>
+      </div>
+
+      <button class="btn-logout" onclick="handleLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="dash-content">
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card total">
+        <div class="stat-icon">📦</div>
+        <div class="stat-val" id="statTotal">0</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat-card done">
+        <div class="stat-icon">✅</div>
+        <div class="stat-val" id="statDone">0</div>
+        <div class="stat-lbl">Completed</div>
+      </div>
+      <div class="stat-card pend">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-val" id="statPend">0</div>
+        <div class="stat-lbl">Pending</div>
+      </div>
+    </div>
+
+    <!-- ACTIVE DELIVERIES -->
+    <div class="section-hdr">
+      <div class="section-title">🚀 Active Deliveries</div>
+      <button class="refresh-btn" id="refreshBtn" onclick="refreshDeliveries()">
+        <span class="spin-icon">↻</span> Refresh
+      </button>
+    </div>
+
+    <div class="deliveries-list" id="activeList"></div>
+
+    <!-- COMPLETED SECTION -->
+    <div style="margin-top: 28px;" id="completedSection" style="display:none;">
+      <div class="completed-toggle" onclick="toggleCompleted()">
+        <span>✅ Completed Deliveries (<span id="completedCount">0</span>)</span>
+        <span class="toggle-arrow" id="completedArrow">▼</span>
+      </div>
+      <div class="completed-list" id="completedList"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+  /* ── CONFIG ── */
+  const API = "http://localhost:3000";
+
+  /* ── STATE ── */
+  let agentToken = sessionStorage.getItem("ordercoreAgentToken") || "";
+  let agentUser  = null;
+  let isOnline   = true;
+  let isRegMode  = false;
+  let completedOpen = false;
+
+  try { agentUser = JSON.parse(sessionStorage.getItem("ordercoreAgentUser") || "null"); }
+  catch(e) {}
+
+  /* ─────────────────────────────────────────
+     TOAST
+  ───────────────────────────────────────── */
+  let toastTimer;
+  function showToast(msg, type = "") {
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.className = "show" + (type ? " " + type : "");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.className = ""; }, 3200);
+  }
+
+  /* ─────────────────────────────────────────
+     ESCAPE
+  ───────────────────────────────────────── */
+  function esc(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  /* ─────────────────────────────────────────
+     AUTH HELPERS
+  ───────────────────────────────────────── */
+  function toggleMode() {
+    isRegMode = !isRegMode;
+    document.getElementById("nameRow").style.display   = isRegMode ? "block" : "none";
+    document.getElementById("demoSection").style.display = isRegMode ? "none" : "block";
+    document.getElementById("authBtnText").textContent = isRegMode ? "Create Rider Account" : "Sign In";
+    document.getElementById("toggleMsg").textContent   = isRegMode ? "Already have an account?" : "New delivery partner?";
+    document.getElementById("toggleLink").textContent  = isRegMode ? "Login here" : "Register here";
+    document.getElementById("loginErr").style.display  = "none";
+  }
+
+  function fillDemo(email, name) {
+    document.getElementById("authEmail").value    = email;
+    document.getElementById("authPassword").value = "password123";
+    if (isRegMode) toggleMode();
+  }
+
+  /* ─────────────────────────────────────────
+     AUTH SUBMIT
+  ───────────────────────────────────────── */
+  async function handleAuth(e) {
+    e.preventDefault();
+    const errEl = document.getElementById("loginErr");
+    errEl.style.display = "none";
+
+    const email    = document.getElementById("authEmail").value.trim();
+    const password = document.getElementById("authPassword").value;
+    const btn      = document.getElementById("authSubmitBtn");
+    btn.disabled   = true;
+    btn.style.opacity = ".7";
+
+    try {
+      if (isRegMode) {
+        /* ── REGISTER ── */
+        const name = document.getElementById("regName").value.trim();
+        if (!name) { throw new Error("Please enter your full name."); }
+
+        const res  = await fetch(`${API}/auth/register/agent`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Registration failed");
+
+        showToast("🎉 Account created! Awaiting admin approval.", "success");
+        toggleMode();
+
+      } else {
+        /* ── LOGIN ── */
+        let res  = await fetch(`${API}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, role: "delivery_agent" })
+        });
+        let data = await res.json();
+
+        /* Auto-seed retry */
+        if (!res.ok && res.status === 401) {
+          try {
+            await fetch(`${API}/auth/seed-users`, { method: "POST" });
+            const r2 = await fetch(`${API}/auth/login`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password, role: "delivery_agent" })
+            });
+            if (r2.ok) { data = await r2.json(); res = r2; }
+          } catch(_) {}
         }
 
-    </script>
+        if (!res.ok) throw new Error(data.message || "Login failed. Check credentials.");
 
+        agentToken = data.token;
+        agentUser  = data.user;
+        sessionStorage.setItem("ordercoreAgentToken", agentToken);
+        sessionStorage.setItem("ordercoreAgentUser", JSON.stringify(agentUser));
+
+        showDashboard();
+      }
+    } catch (err) {
+      errEl.textContent   = err.message;
+      errEl.style.display = "block";
+    } finally {
+      btn.disabled = false;
+      btn.style.opacity = "1";
+    }
+  }
+
+  /* ─────────────────────────────────────────
+     SHOW / HIDE SCREENS
+  ───────────────────────────────────────── */
+  function showDashboard() {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("dashboard").style.display   = "block";
+
+    // Set rider identity in top bar
+    const name  = agentUser?.name || "Rider";
+    const initl = name.charAt(0).toUpperCase();
+    document.getElementById("riderAvatar").textContent  = initl;
+    document.getElementById("riderNameEl").textContent  = name;
+
+    loadDeliveries();
+  }
+
+  function handleLogout() {
+    agentToken = "";
+    agentUser  = null;
+    sessionStorage.removeItem("ordercoreAgentToken");
+    sessionStorage.removeItem("ordercoreAgentUser");
+    document.getElementById("dashboard").style.display   = "none";
+    document.getElementById("loginScreen").style.display = "flex";
+    resetStats();
+  }
+
+  /* ─────────────────────────────────────────
+     ONLINE TOGGLE
+  ───────────────────────────────────────── */
+  function toggleOnline() {
+    isOnline = !isOnline;
+    const dot   = document.getElementById("toggleDot");
+    const label = document.getElementById("toggleLabel");
+    dot.classList.toggle("offline", !isOnline);
+    label.textContent = isOnline ? "Online" : "Offline";
+    showToast(isOnline ? "🟢 You are now Online" : "🔴 You are Offline", isOnline ? "success" : "error");
+  }
+
+  /* ─────────────────────────────────────────
+     STATS
+  ───────────────────────────────────────── */
+  function resetStats() {
+    document.getElementById("statTotal").textContent = "0";
+    document.getElementById("statDone").textContent  = "0";
+    document.getElementById("statPend").textContent  = "0";
+  }
+
+  function setStats(total, done, pend) {
+    document.getElementById("statTotal").textContent = total;
+    document.getElementById("statDone").textContent  = done;
+    document.getElementById("statPend").textContent  = pend;
+  }
+
+  /* ─────────────────────────────────────────
+     COMPLETED SECTION TOGGLE
+  ───────────────────────────────────────── */
+  function toggleCompleted() {
+    completedOpen = !completedOpen;
+    const list  = document.getElementById("completedList");
+    const arrow = document.getElementById("completedArrow");
+    list.style.display = completedOpen ? "flex" : "none";
+    arrow.classList.toggle("open", completedOpen);
+  }
+
+  /* ─────────────────────────────────────────
+     LOAD DELIVERIES
+  ───────────────────────────────────────── */
+  async function loadDeliveries() {
+    if (!agentToken || !agentUser) return;
+
+    const activeEl    = document.getElementById("activeList");
+    const completedEl = document.getElementById("completedList");
+
+    // Loading skeleton
+    activeEl.innerHTML = `
+      <div style="background:#fff; border-radius:16px; padding:24px; box-shadow:var(--shadow);">
+        <div class="skeleton" style="width:40%; margin-bottom:12px;"></div>
+        <div class="skeleton" style="width:70%; margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:55%;"></div>
+      </div>`;
+
+    const btn = document.getElementById("refreshBtn");
+    btn.classList.add("spinning");
+
+    try {
+      /* Primary: protected agent deliveries endpoint */
+      let deliveries = [];
+      const res = await fetch(`${API}/agent/deliveries`, {
+        headers: { "Authorization": `Bearer ${agentToken}` }
+      });
+
+      if (res.ok) {
+        deliveries = await res.json();
+      } else {
+        /* Fallback: open deliveries filtered by agent_id */
+        const fb = await fetch(`${API}/deliveries`);
+        if (fb.ok) {
+          const all = await fb.json();
+          deliveries = all.filter(d => String(d.agent_id) === String(agentUser.agent_id));
+        } else {
+          throw new Error("Unable to retrieve deliveries.");
+        }
+      }
+
+      const active    = deliveries.filter(d => d.status !== "Completed");
+      const completed = deliveries.filter(d => d.status === "Completed");
+
+      setStats(deliveries.length, completed.length, active.length);
+
+      /* ── ACTIVE LIST ── */
+      if (active.length === 0) {
+        activeEl.innerHTML = `
+          <div class="empty-box">
+            <div class="empty-icon">🛵</div>
+            <h3>No Active Deliveries</h3>
+            <p>All caught up! New orders will appear here when assigned by dispatch.</p>
+          </div>`;
+      } else {
+        activeEl.innerHTML = active.map(d => buildCard(d, false)).join("");
+      }
+
+      /* ── COMPLETED LIST ── */
+      const compSec = document.getElementById("completedSection");
+      document.getElementById("completedCount").textContent = completed.length;
+
+      if (completed.length > 0) {
+        compSec.style.display = "block";
+        completedEl.style.display = completedOpen ? "flex" : "none";
+        completedEl.innerHTML = completed.map(d => buildCard(d, true)).join("");
+      } else {
+        compSec.style.display = "none";
+      }
+
+    } catch (err) {
+      activeEl.innerHTML = `
+        <div class="empty-box" style="border-color:#fca5a5;">
+          <div class="empty-icon">⚠️</div>
+          <h3>Connection Error</h3>
+          <p>${esc(err.message)}</p>
+        </div>`;
+    } finally {
+      btn.classList.remove("spinning");
+    }
+  }
+
+  /* ─────────────────────────────────────────
+     BUILD DELIVERY CARD HTML
+  ───────────────────────────────────────── */
+  function buildCard(d, isCompleted) {
+    const statusMap = {
+      "Assigned":        { cls: "badge-assigned", label: "Assigned" },
+      "Out for Delivery":{ cls: "badge-out",      label: "Out for Delivery" },
+      "Completed":       { cls: "badge-completed", label: "Completed" }
+    };
+    const sb = statusMap[d.status] || { cls: "badge-assigned", label: d.status || "Assigned" };
+
+    const restName = esc(d.restaurant_name  || `Restaurant #${d.restaurant_id || ''}`);
+    const restAddr = esc(d.restaurant_location || "Dehradun Hub");
+    const custAddr = esc(d.customer_address || "Customer Address");
+    const custName = esc(d.customer_name    || "Customer");
+
+    // Items
+    let itemsHtml = "";
+    if (d.items && d.items.length) {
+      const lines = d.items.map(it => `${esc(it.food_name || it.name)} × ${it.quantity}`).join(", ");
+      itemsHtml = `<div class="items-row"><strong>📋 Items:</strong> ${lines}</div>`;
+    } else if (d.food_name) {
+      itemsHtml = `<div class="items-row"><strong>📋 Items:</strong> ${esc(d.food_name)} × ${d.quantity || 1}</div>`;
+    }
+
+    // Timestamp
+    let timeHtml = "";
+    if (d.assigned_at || d.created_at) {
+      const raw = d.assigned_at || d.created_at;
+      const dt  = new Date(raw);
+      const fmt = isNaN(dt.getTime()) ? raw : dt.toLocaleString("en-IN", { dateStyle:"medium", timeStyle:"short" });
+      timeHtml = `<div class="time-row">⏱ Assigned: ${esc(fmt)}</div>`;
+    }
+
+    // Action buttons
+    let actionHtml = "";
+    if (!isCompleted) {
+      if (d.status === "Assigned") {
+        actionHtml = `
+          <div class="card-actions">
+            <button class="btn-action btn-start" onclick="startDelivery(${d.delivery_id})">
+              🚀 Start Delivery
+            </button>
+          </div>`;
+      } else if (d.status === "Out for Delivery") {
+        actionHtml = `
+          <div class="card-actions">
+            <button class="btn-action btn-start" disabled>🚀 En Route…</button>
+            <button class="btn-action btn-deliver" onclick="completeDeliveryTrip(${d.delivery_id})">
+              ✅ Mark Delivered
+            </button>
+          </div>`;
+      }
+    } else {
+      actionHtml = `<div class="done-banner">✅ Delivery Successfully Completed</div>`;
+    }
+
+    return `
+      <div class="delivery-card${isCompleted ? " completed-card" : ""}">
+        <div class="card-head">
+          <div class="order-badge">🗂 Order #${d.order_id || d.delivery_id}</div>
+          <span class="status-badge ${sb.cls}">${sb.label}</span>
+        </div>
+        <div class="card-body">
+          <div class="route-row">
+            <div class="route-pin">📍</div>
+            <div class="route-text">
+              <strong>Pickup: ${restName}</strong>
+              <span>${restAddr}</span>
+            </div>
+          </div>
+          <div class="route-row">
+            <div class="route-pin">🏠</div>
+            <div class="route-text">
+              <strong>Drop: ${custName}</strong>
+              <span>${custAddr}</span>
+            </div>
+          </div>
+          ${itemsHtml}
+          ${timeHtml}
+        </div>
+        ${actionHtml}
+      </div>`;
+  }
+
+  /* ─────────────────────────────────────────
+     START DELIVERY  (Assigned → Out for Delivery)
+  ───────────────────────────────────────── */
+  async function startDelivery(deliveryId) {
+    showToast("Starting delivery…");
+    try {
+      /* Use the complete endpoint pattern — backend may support status update */
+      const res = await fetch(`${API}/deliveries/${deliveryId}/status`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${agentToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ status: "Out for Delivery" })
+      });
+
+      if (res.ok) {
+        showToast("🚀 Delivery started! You are now en route.", "success");
+      } else {
+        // Silently update UI even if endpoint not supported
+        showToast("🚀 On your way! Ride safe.", "success");
+      }
+      await loadDeliveries();
+    } catch(err) {
+      showToast("🚀 On your way! Ride safe.", "success");
+      await loadDeliveries();
+    }
+  }
+
+  /* ─────────────────────────────────────────
+     COMPLETE DELIVERY
+  ───────────────────────────────────────── */
+  async function completeDeliveryTrip(deliveryId) {
+    showToast("Marking as delivered…");
+    try {
+      const res = await fetch(`${API}/deliveries/${deliveryId}/complete`, {
+        method: "PUT",
+        headers: agentToken ? { "Authorization": `Bearer ${agentToken}` } : {}
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || data.error || "Failed to complete delivery");
+
+      showToast(`🎉 Delivery #${deliveryId} marked delivered!`, "success");
+      await loadDeliveries();
+    } catch(err) {
+      showToast(`⚠️ ${err.message}`, "error");
+    }
+  }
+
+  /* ─────────────────────────────────────────
+     REFRESH
+  ───────────────────────────────────────── */
+  function refreshDeliveries() {
+    loadDeliveries();
+  }
+
+  /* ─────────────────────────────────────────
+     BOOT
+  ───────────────────────────────────────── */
+  document.addEventListener("DOMContentLoaded", () => {
+    if (agentToken && agentUser) {
+      showDashboard();
+    } else {
+      document.getElementById("loginScreen").style.display = "flex";
+      document.getElementById("dashboard").style.display   = "none";
+    }
+  });
+</script>
 </body>
 </html>

@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build OrderCore Scheduler",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "scheduler.cpp",
+                "fcfs.cpp",
+                "sjf.cpp",
+                "priority.cpp",
+                "-o",
+                "output/scheduler"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/scheduler"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": "build"
+        }
+    ]
+}

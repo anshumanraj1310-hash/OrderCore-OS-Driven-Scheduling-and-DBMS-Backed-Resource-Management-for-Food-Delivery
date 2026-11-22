@@ -1,2 +1,13 @@
 node_modules/
 .env
+.DS_Store
+*.dSYM/
+*.o
+*.backup
+tempCodeRunnerFile.js
+os_test
+resource_test
+scheduler_test
+scheduler/scheduler
+scheduler/scheduler_test
+deadlock/deadlock_runner

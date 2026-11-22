@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run OrderCore Scheduler",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/scheduler/output/scheduler",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/scheduler",
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "preLaunchTask": "Build OrderCore Scheduler"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/tusharthapliyal/Desktop/OrderCore-OS-Driven-Scheduling-and-DBMS-Backed-Resource-Management-for-Food-Delivery/scheduler",
+      "program": "/Users/tusharthapliyal/Desktop/OrderCore-OS-Driven-Scheduling-and-DBMS-Backed-Resource-Management-for-Food-Delivery/scheduler/build/Debug/outDebug"
+    }
+  ]
+}

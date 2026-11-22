@@ -22,7 +22,7 @@ int main()
     manager.showAgents();
 
     cout << "\nReleasing an agent:\n";
-    manager.releaseAgent();
+    manager.releaseAgent(2);
 
     cout << "\nFinal Agent Status:\n";
     manager.showAgents();

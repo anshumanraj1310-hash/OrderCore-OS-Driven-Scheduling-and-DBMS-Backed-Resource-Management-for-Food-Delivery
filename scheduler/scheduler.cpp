@@ -1,63 +1,73 @@
+
 #include <iostream>
+#include <string>
 #include "scheduler.h"
 
 using namespace std;
 
-void displayResults(Order orders[], int n)
+int main(int argc, char* argv[])
 {
-    cout << "Order\tArrival\tPrep\tPriority\tCompletion\tWaiting\tTurnaround\n";
-
-    for (int i = 0; i < n; i++)
+    if (argc != 2)
     {
-        cout << orders[i].id << "\t"
-             << orders[i].arrivalTime << "\t"
-             << orders[i].prepTime << "\t"
-             << orders[i].priority << "\t\t"
-             << orders[i].completionTime << "\t\t"
-             << orders[i].waitingTime << "\t"
-             << orders[i].turnaroundTime << endl;
+        cerr << "Usage: scheduler FCFS|SJF|PRIORITY\n";
+        return 1;
     }
-}
 
-void resetOrders(Order orders[], int n)
-{
+    string algorithm = argv[1];
+
+    int n;
+    cin >> n;
+
+    if (n < 1 || n > 100)
+    {
+        cerr << "Number of orders must be between 1 and 100\n";
+        return 1;
+    }
+
+    Order orders[100];
+
     for (int i = 0; i < n; i++)
     {
+        cin >> orders[i].id
+            >> orders[i].arrivalTime
+            >> orders[i].prepTime
+            >> orders[i].priority;
+
         orders[i].completionTime = 0;
         orders[i].waitingTime = 0;
         orders[i].turnaroundTime = 0;
     }
-}
 
-int main()
-{
-    int n = 3;
-
-    Order orders[3] =
+    if (algorithm == "FCFS")
     {
-        {1, 0, 5, 2, 0, 0, 0},
-        {2, 1, 3, 1, 0, 0, 0},
-        {3, 2, 7, 3, 0, 0, 0}
-    };
+        fcfs(orders, n);
+    }
+    else if (algorithm == "SJF")
+    {
+        sjf(orders, n);
+    }
+    else if (algorithm == "PRIORITY")
+    {
+        priorityScheduling(orders, n);
+    }
+    else
+    {
+        cerr << "Invalid scheduling algorithm\n";
+        return 1;
+    }
 
-    cout << "===== FCFS Scheduling =====\n\n";
+    cout << "id,arrivalTime,prepTime,priority,completionTime,waitingTime,turnaroundTime\n";
 
-    fcfs(orders, n);
-    displayResults(orders, n);
-
-    resetOrders(orders, n);
-
-    cout << "\n===== SJF Scheduling =====\n\n";
-
-    sjf(orders, n);
-    displayResults(orders, n);
-
-    resetOrders(orders, n);
-
-    cout << "\n===== Priority Scheduling =====\n\n";
-
-    priorityScheduling(orders, n);
-    displayResults(orders, n);
+    for (int i = 0; i < n; i++)
+    {
+        cout << orders[i].id << ","
+             << orders[i].arrivalTime << ","
+             << orders[i].prepTime << ","
+             << orders[i].priority << ","
+             << orders[i].completionTime << ","
+             << orders[i].waitingTime << ","
+             << orders[i].turnaroundTime << "\n";
+    }
 
     return 0;
 }

@@ -1,104 +1,1810 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin - OrderCore</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | OrderCore</title>
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", "Segoe UI", Arial, sans-serif;
+            background: #f4f7fc;
+            color: #172033;
+            line-height: 1.6;
+        }
+
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 245px;
+            flex-shrink: 0;
+            background: #1c1c1c;
+            color: white;
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            font-size: 32px;
+            font-weight: 800;
+            font-style: italic;
+            color: #E23744;
+            letter-spacing: -1.5px;
+        }
+
+        .brand-subtitle {
+            color: #8c8c8c;
+            font-size: 11.5px;
+            font-style: normal;
+            margin: 2px 0 32px;
+        }
+
+        .sidebar-label {
+            color: #696969;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding: 0 12px;
+            margin: 14px 0 8px;
+        }
+
+        .sidebar nav a {
+            display: block;
+            text-decoration: none;
+            color: #d1d5db;
+            padding: 10px 14px;
+            margin: 4px 0;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: #E23744;
+            color: white;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 34px;
+            overflow-x: hidden;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            color: #14213d;
+            font-size: 29px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.8px;
+        }
+
+        .topbar p {
+            color: #718096;
+            margin: 5px 0 0;
+            font-size: 14px;
+        }
+
+        .admin-tag {
+            background: #e8efff;
+            color: #2454b8;
+            padding: 9px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* SECTION HEADINGS */
+
+        .section-heading {
+            color: #172b4d;
+            font-size: 21px;
+            font-weight: 750;
+            margin: 30px 0 16px;
+        }
+
+        .section-description {
+            color: #718096;
+            font-size: 13px;
+            margin-top: -10px;
+            margin-bottom: 18px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e5eaf2;
+            margin: 32px 0;
+        }
+
+        /* DASHBOARD CARDS */
+
+        .admin-overview {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin: 22px 0 30px;
+        }
+
+        .overview-card {
+            background: white;
+            border: 1px solid #e8edf5;
+            border-radius: 15px;
+            padding: 22px;
+            text-align: left;
+            box-shadow: 0 4px 16px rgba(20, 40, 80, 0.035);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(20, 40, 80, 0.08);
+        }
+
+        .overview-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            background: #edf3ff;
+            color: #2563eb;
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .overview-card span {
+            color: #718096;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .overview-card h2 {
+            color: #172b4d;
+            font-size: 32px;
+            font-weight: 800;
+            margin: 5px 0 0;
+        }
+
+        /* PANELS */
+
+        .panel {
+            background: white;
+            border: 1px solid #e8edf5;
+            border-radius: 15px;
+            padding: 24px;
+            margin: 18px 0;
+            box-shadow: 0 4px 16px rgba(20, 40, 80, 0.035);
+        }
+
+        .panel-title {
+            font-size: 17px;
+            font-weight: 750;
+            color: #243b60;
+            margin: 0 0 8px;
+        }
+
+        .panel-description {
+            color: #718096;
+            font-size: 13px;
+            margin: 0 0 18px;
+        }
+
+        /* BUTTONS */
+
+        button {
+            background: #E23744;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 650;
+            cursor: pointer;
+            margin: 5px 5px 5px 0;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        button:hover {
+            background: #cb202d;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* INPUTS */
+
+        select,
+        input {
+            background: white;
+            color: #172033;
+            border: 1px solid #d7dfeb;
+            border-radius: 9px;
+            padding: 11px 13px;
+            font-size: 13px;
+            margin: 7px 10px 7px 0;
+            outline: none;
+            min-width: 180px;
+        }
+
+        select:focus,
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        label {
+            display: inline-block;
+            color: #53627a;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* SCHEDULER METRICS */
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .metric-card h3 {
+            font-size: 13px;
+            color: #475569;
+            margin: 0;
+        }
+
+        .metric-card p {
+            font-size: 27px;
+            color: #2563eb;
+            font-weight: 800;
+            margin: 8px 0 0;
+        }
+
+        /* GANTT CHART */
+
+        .gantt-container {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+            padding-bottom: 12px;
+            gap: 3px;
+        }
+
+        .gantt-block {
+            flex: 0 0 auto;
+            min-width: 75px;
+            padding: 14px 9px;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .gantt-block strong,
+        .gantt-block span {
+            display: block;
+            margin: 4px 0;
+            color: inherit;
+        }
+
+        .gantt-time {
+            font-size: 12px;
+        }
+
+        /* TABLES */
+
+        table,
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            background: white;
+            font-size: 13px;
+        }
+
+        th {
+            background: #edf3fc;
+            color: #243b60;
+            font-weight: 700;
+            padding: 13px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #edf0f5;
+            color: #475569;
+        }
+
+        tr:hover td {
+            background: #f8faff;
+        }
+
+        /* RESULTS */
+
+        #schedulerResult,
+        #data {
+            background: white;
+            border: 1px solid #e7ecf4;
+            border-radius: 15px;
+            padding: 22px;
+            margin-top: 20px;
+            overflow-x: auto;
+            box-shadow: 0 4px 16px rgba(20, 40, 80, 0.035);
+        }
+
+        #deliveryMessage,
+        #completeMessage,
+        #dispatchMessage {
+            margin: 12px 0;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1050px) {
+            .admin-overview {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 750px) {
+            .app-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .brand-subtitle {
+                margin-bottom: 15px;
+            }
+
+            .sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .sidebar nav a {
+                margin: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .admin-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .topbar h1 {
+                font-size: 24px;
+            }
+
+            select,
+            input {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>Admin Portal</h1>
+<div class="app-layout">
 
-    <button onclick="loadOrders()">View Orders</button>
+    <!-- SIDEBAR -->
 
-    <button onclick="loadAgents()">View Agents</button>
+    <aside class="sidebar">
 
-    <button onclick="loadDeliveries()">View Deliveries</button>
+        <div class="brand">OrderCore.</div>
+        <div class="brand-subtitle">Food Delivery Management</div>
 
-    <div id="data"></div>
+        <div class="sidebar-label">MAIN MENU</div>
 
-    <script>
+        <nav>
+            <a href="#dashboard" class="active">▦ Dashboard</a>
+            <a href="#scheduling">◷ Scheduling</a>
+            <a href="#deadlock">🔒 Deadlock Detection</a>
+            <a href="#delivery-management">♧ Delivery Management</a>
+            <a href="#approvals">👥 Account Approvals</a>
+            <a href="#data">▤ Data Management</a>
+        </nav>
 
-        function loadOrders() {
+        <div class="sidebar-label" style="margin-top:35px;">
+            SYSTEM
+        </div>
 
-            fetch("http://localhost:3000/orders")
-                .then(response => response.json())
-                .then(data => {
+        <nav>
+            <a href="index.html">⌂ Home Page</a>
+        </nav>
 
-                    let output = "<h2>Orders</h2>";
+    </aside>
 
-                    data.forEach(order => {
+    <!-- MAIN CONTENT -->
 
-                        output += `
-                            <p>
-                                Order ${order.order_id}
-                                |
-                                ${order.customer_name}
-                                |
-                                ${order.restaurant_name}
-                                |
-                                Status: ${order.status}
-                            </p>
-                        `;
-                    });
+    <main class="main-content">
 
-                    document.getElementById("data").innerHTML = output;
+        <header class="topbar" id="dashboard">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Monitor orders, scheduling and delivery operations.</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div id="topAdminStatus" class="admin-tag">
+                    ● Administrator
+                </div>
+                <button id="topAdminBtn" onclick="toggleAdminLoginModal()" style="margin:0; padding:8px 16px; font-size:13px; font-weight:700; border-radius:8px; background:#E23744; color:white; border:none; cursor:pointer;">
+                    Admin Log In
+                </button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD OVERVIEW -->
+
+        <h2 class="section-heading">Dashboard Overview</h2>
+        <p class="section-description">
+            A quick overview of your food delivery system.
+        </p>
+
+        <section class="admin-overview">
+
+            <div class="overview-card">
+                <div class="overview-icon">▤</div>
+                <span>Total Orders</span>
+                <h2 id="totalOrders">0</h2>
+            </div>
+
+            <div class="overview-card">
+                <div class="overview-icon">◷</div>
+                <span>Waiting Orders</span>
+                <h2 id="waitingOrders">0</h2>
+            </div>
+
+            <div class="overview-card">
+                <div class="overview-icon">♧</div>
+                <span>Available Agents</span>
+                <h2 id="availableAgents">0</h2>
+            </div>
+
+            <div class="overview-card">
+                <div class="overview-icon">✓</div>
+                <span>Active Deliveries</span>
+                <h2 id="activeDeliveries">0</h2>
+            </div>
+
+        </section>
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="panel">
+            <h3 class="panel-title">Quick Actions</h3>
+            <p class="panel-description">
+                View and manage the latest system records.
+            </p>
+
+            <div class="action-row">
+                <button onclick="loadOrders()">View Orders</button>
+                <button onclick="loadAgents()">View Agents</button>
+                <button onclick="loadDeliveries()">View Deliveries</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- SCHEDULING -->
+
+        <section id="scheduling">
+
+            <h2 class="section-heading">CPU Scheduling Simulator</h2>
+            <p class="section-description">
+                Select an algorithm to simulate or dispatch the next order.
+            </p>
+
+            <div class="panel">
+
+                <h3 class="panel-title">Scheduling Configuration</h3>
+
+                <label for="algorithm">Scheduling Algorithm</label>
+                <br>
+
+                <select id="algorithm">
+                    <option value="FCFS">First Come First Serve (FCFS)</option>
+                    <option value="SJF">Shortest Job First (SJF)</option>
+                    <option value="PRIORITY">Priority Scheduling</option>
+                </select>
+
+                <hr>
+
+                <h3 class="panel-title">Dispatch Next Order</h3>
+                <p class="panel-description">
+                    Select a restaurant and start its next waiting order.
+                </p>
+
+                <label for="dispatchRestaurant">Select Restaurant</label>
+                <br>
+
+                <select id="dispatchRestaurant">
+                    <option value="">Loading restaurants...</option>
+                </select>
+
+                <br>
+
+                <button onclick="dispatchNextOrder()">
+                    Start Next Order
+                </button>
+
+                <div id="dispatchMessage"></div>
+
+                <hr>
+
+                <h3 class="panel-title">Run Scheduling Simulation</h3>
+                <p class="panel-description">
+                    Compare scheduling performance without changing database order statuses.
+                </p>
+
+                <button onclick="runScheduler()">Run Scheduler</button>
+                <button onclick="compareAlgorithms()">Compare All Algorithms</button>
+
+            </div>
+
+            <div id="schedulerResult"></div>
+
+        </section>
+
+        <hr>
+
+        <!-- DEADLOCK DETECTION & PREVENTION -->
+
+        <section id="deadlock">
+
+            <h2 class="section-heading">OS Deadlock Detection &amp; Prevention</h2>
+            <p class="section-description">
+                Demonstrates how circular waits between kitchen prep slots and delivery agents are detected via resource allocation graphs and resolved through preemption.
+            </p>
+
+            <div class="panel">
+                <h3 class="panel-title">Resource Allocation Matrix</h3>
+                <p class="panel-description">
+                    Process P0 (Order 1) and Process P1 (Order 2) competing for Resource R0 (Kitchen Prep Slot) and Resource R1 (Delivery Agent).
+                </p>
+
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin: 15px 0;">
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:15px;">
+                        <h4 style="margin:0 0 10px; color:#1e293b;">Allocation Matrix (Held Resources)</h4>
+                        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                            <thead>
+                                <tr style="background:#e2e8f0; text-align:left;">
+                                    <th style="padding:6px;">Process</th>
+                                    <th style="padding:6px;">R0 (Kitchen Slot)</th>
+                                    <th style="padding:6px;">R1 (Delivery Agent)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding:6px; font-weight:600;">P0 (Order 1)</td>
+                                    <td style="padding:6px; font-family:monospace; font-weight:bold;" id="alloc-0-0">1</td>
+                                    <td style="padding:6px; font-family:monospace; font-weight:bold;" id="alloc-0-1">0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:6px; font-weight:600;">P1 (Order 2)</td>
+                                    <td style="padding:6px; font-family:monospace; font-weight:bold;" id="alloc-1-0">0</td>
+                                    <td style="padding:6px; font-family:monospace; font-weight:bold;" id="alloc-1-1">1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:15px;">
+                        <h4 style="margin:0 0 10px; color:#1e293b;">Request Matrix (Requested Resources)</h4>
+                        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                            <thead>
+                                <tr style="background:#e2e8f0; text-align:left;">
+                                    <th style="padding:6px;">Process</th>
+                                    <th style="padding:6px;">R0 (Kitchen Slot)</th>
+                                    <th style="padding:6px;">R1 (Delivery Agent)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding:6px; font-weight:600;">P0 (Order 1)</td>
+                                    <td style="padding:6px; font-family:monospace; font-weight:bold;" id="req-0-0">0</td>
+                                    <td style="padding:6px; font-family:monospace; font-weight:bold;" id="req-0-1">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:6px; font-weight:600;">P1 (Order 2)</td>
+                                    <td style="padding:6px; font-family:monospace; font-weight:bold;" id="req-1-0">1</td>
+                                    <td style="padding:6px; font-family:monospace; font-weight:bold;" id="req-1-1">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="action-row" style="margin-top:15px;">
+                    <button onclick="runDeadlockDetection()" style="background:#dc2626;">Simulate &amp; Detect Deadlock</button>
+                    <button onclick="resolveDeadlock()" style="background:#16a34a;">Resolve Deadlock (Preemption)</button>
+                    <button onclick="resetDeadlockDemo()" style="background:#64748b;">Reset Matrix</button>
+                </div>
+
+                <div id="deadlockResult" style="margin-top:18px;"></div>
+            </div>
+
+        </section>
+
+        <hr>
+
+        <!-- DELIVERY MANAGEMENT -->
+
+        <section id="delivery-management">
+
+            <h2 class="section-heading">Delivery Management</h2>
+            <p class="section-description">
+                Assign available delivery agents to orders that are ready.
+            </p>
+
+            <div class="panel">
+
+                <h3 class="panel-title">Assign Delivery Agent</h3>
+
+                <label for="deliveryOrder">Select Ready Order</label>
+                <br>
+
+                <select id="deliveryOrder">
+                    <option value="">Select an order</option>
+                </select>
+
+                <br>
+
+                <label for="deliveryAgent">Select Available Agent</label>
+                <br>
+
+                <select id="deliveryAgent">
+                    <option value="">Select an agent</option>
+                </select>
+
+                <br>
+
+                <button onclick="assignDelivery()">Assign Delivery</button>
+                <button onclick="loadDeliveryOptions()">Refresh Options</button>
+
+                <div id="deliveryMessage"></div>
+
+            </div>
+
+            <div class="panel">
+
+                <h3 class="panel-title">Complete a Delivery</h3>
+                <p class="panel-description">
+                    Mark a delivery as completed using its delivery ID.
+                </p>
+
+                <label for="completeDeliveryId">Delivery ID</label>
+                <br>
+
+                <input type="number" id="completeDeliveryId" min="1">
+
+                <button onclick="completeDelivery()">Mark as Completed</button>
+
+                <div id="completeMessage"></div>
+
+            </div>
+
+        </section>
+
+        <hr>
+
+        <!-- ACCOUNT APPROVALS (RBAC) -->
+
+        <section id="approvals">
+
+            <h2 class="section-heading">Account Approvals &amp; Role-Based Access</h2>
+            <p class="section-description">
+                Verify and activate newly registered Restaurant and Delivery Agent accounts.
+            </p>
+
+            <div class="panel">
+                <div id="adminAuthStatus" style="display:flex; justify-content:space-between; align-items:center; background:#f1f5f9; padding:12px 18px; border-radius:10px; margin-bottom:15px;">
+                    <span id="adminAuthText">Checking Admin authentication...</span>
+                    <button id="adminAuthBtn" onclick="toggleAdminLoginModal()" style="margin:0; padding:6px 14px; font-size:12px;">Admin Login</button>
+                </div>
+
+                <div id="adminLoginBox" style="display:none; background:#fff; border:1px solid #cbd5e1; border-radius:10px; padding:18px; margin-bottom:18px;">
+                    <h4 style="margin:0 0 10px;">Admin Authentication</h4>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                        <input type="email" id="adminEmail" placeholder="admin@ordercore.com" style="width:220px; margin:0;" value="admin@ordercore.com">
+                        <input type="password" id="adminPassword" placeholder="admin123" style="width:160px; margin:0;" value="admin123">
+                        <button onclick="performAdminLogin()" style="margin:0;">Log In</button>
+                        <button onclick="quickAdminLogin()" style="background:#6366f1; margin:0;">1-Click Admin Fill</button>
+                    </div>
+                    <div id="adminLoginError" style="color:#dc2626; font-size:13px; margin-top:8px;"></div>
+                </div>
+
+                <h3 class="panel-title">Pending Account Approvals (<span id="pendingCount">0</span>)</h3>
+                <p class="panel-description">
+                    Restaurants and Delivery Agents require verification before they can access operational dashboards.
+                </p>
+
+                <div id="pendingAccountsList">
+                    <p style="color:#64748b;">No pending accounts found.</p>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <button onclick="loadPendingUsers()">Refresh Pending Accounts</button>
+                    <button onclick="loadAllRegisteredUsers()">View All System Users</button>
+                </div>
+
+                <div id="allUsersList" style="margin-top:15px;"></div>
+            </div>
+
+        </section>
+
+        <hr>
+
+        <!-- DATA MANAGEMENT -->
+
+        <section id="data">
+
+            <h2 class="section-heading">Data Management</h2>
+            <p class="section-description">
+                Orders, delivery agents and delivery records will appear here.
+            </p>
+
+        </section>
+
+        <footer style="text-align:center; color:#94a3b8; font-size:12px; padding:25px 0;">
+            © OrderCore | OS-Driven Scheduling and DBMS-Backed Resource Management
+        </footer>
+
+    </main>
+</div>
+
+<script>
+    async function loadDashboardOverview() {
+        try {
+            const [ordersRes, agentsRes, deliveriesRes] = await Promise.all([
+                fetch("/orders"),
+                fetch("/agents"),
+                fetch("/deliveries")
+            ]);
+
+            if (!ordersRes.ok || !agentsRes.ok || !deliveriesRes.ok) {
+                throw new Error("Unable to load dashboard data.");
+            }
+
+            const [orders, agents, deliveries] = await Promise.all([
+                ordersRes.json(),
+                agentsRes.json(),
+                deliveriesRes.json()
+            ]);
+
+            const uniqueOrders = [
+                ...new Map(orders.map(order => [order.order_id, order])).values()
+            ];
+
+            document.getElementById("totalOrders").textContent =
+                uniqueOrders.length;
+
+            document.getElementById("waitingOrders").textContent =
+                uniqueOrders.filter(order => order.status === "Waiting").length;
+
+            document.getElementById("availableAgents").textContent =
+                agents.filter(agent => agent.status === "Available").length;
+
+            document.getElementById("activeDeliveries").textContent =
+                deliveries.filter(delivery =>
+                    ["Assigned", "In Transit"].includes(delivery.status)
+                ).length;
+
+        } catch (error) {
+            console.error("Dashboard overview:", error);
+        }
+    }
+
+    function loadOrders() {
+        fetch("http://localhost:3000/orders")
+            .then(response => response.json())
+            .then(data => {
+                let output = "<h2>Orders</h2>";
+
+                data.forEach(order => {
+                    output += `
+                        <p>
+                            Order ${order.order_id}
+                            |
+                            ${order.customer_name}
+                            |
+                            ${order.restaurant_name}
+                            |
+                            Status: ${order.status}
+                        </p>
+                    `;
                 });
+
+                document.getElementById("data").innerHTML = output;
+            })
+            .catch(error => {
+                document.getElementById("data").innerHTML =
+                    "<p>Could not load orders. Check the backend server.</p>";
+            });
+    }
+
+    function loadAgents() {
+        fetch("http://localhost:3000/agents")
+            .then(response => response.json())
+            .then(data => {
+                let output = "<h2>Delivery Agents</h2>";
+
+                data.forEach(agent => {
+                    output += `
+                        <p>
+                            ${agent.agent_id}
+                            - ${agent.name}
+                            - ${agent.status}
+                        </p>
+                    `;
+                });
+
+                document.getElementById("data").innerHTML = output;
+            })
+            .catch(error => {
+                document.getElementById("data").innerHTML =
+                    "<p>Could not load delivery agents.</p>";
+            });
+    }
+
+    function loadDeliveries() {
+        fetch("http://localhost:3000/deliveries")
+            .then(response => response.json())
+            .then(data => {
+                let output = "<h2>Deliveries</h2>";
+
+                data.forEach(delivery => {
+                    output += `
+                        <p>
+                            Delivery ${delivery.delivery_id}
+                            |
+                            Order ${delivery.order_id}
+                            |
+                            Agent ${delivery.agent_id}
+                            |
+                            ${delivery.status}
+                        </p>
+                    `;
+                });
+
+                document.getElementById("data").innerHTML = output;
+            })
+            .catch(error => {
+                document.getElementById("data").innerHTML =
+                    "<p>Could not load deliveries.</p>";
+            });
+    }
+
+    async function getSchedule(algorithm) {
+        const response = await fetch("http://localhost:3000/schedule", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ algorithm })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || "Scheduling failed.");
         }
 
+        return result;
+    }
 
-        function loadAgents() {
+    async function runScheduler() {
+        const resultDiv = document.getElementById("schedulerResult");
+        const algorithm = document.getElementById("algorithm").value;
 
-            fetch("http://localhost:3000/agents")
-                .then(response => response.json())
-                .then(data => {
+        resultDiv.innerHTML = "<p>Running scheduler...</p>";
 
-                    let output = "<h2>Delivery Agents</h2>";
+        try {
+            const result = await getSchedule(algorithm);
 
-                    data.forEach(agent => {
+            if (!result.orders.length) {
+                resultDiv.innerHTML = `
+                    <h3>${result.algorithm} Results</h3>
+                    <p>${result.message || "No waiting orders found."}</p>
+                `;
+                return;
+            }
 
-                        output += `
-                            <p>
-                                ${agent.agent_id}
-                                - ${agent.name}
-                                - ${agent.status}
-                            </p>
-                        `;
-                    });
+            let output = `
+                <h2>${result.algorithm} Scheduling Results</h2>
 
-                    document.getElementById("data").innerHTML = output;
-                });
+                <div class="metrics">
+                    <div class="metric-card">
+                        <h3>Average Waiting Time</h3>
+                        <p>${result.averageWaitingTime}</p>
+                    </div>
+
+                    <div class="metric-card">
+                        <h3>Average Turnaround Time</h3>
+                        <p>${result.averageTurnaroundTime}</p>
+                    </div>
+                </div>
+
+                <h3>Gantt Chart</h3>
+                <p>Each block shows an order's execution interval.</p>
+
+                <div class="gantt-container">
+            `;
+
+            let currentTime = 0;
+
+            result.orders.forEach(order => {
+                const start = order.completionTime - order.prepTime;
+                const duration = Math.max(order.prepTime, 1);
+
+                if (start > currentTime) {
+                    const idleDuration = start - currentTime;
+
+                    output += `
+                        <div class="gantt-block"
+                             style="width:${idleDuration * 35}px; background:#e5e7eb;">
+                            <strong>CPU Idle</strong>
+                            <span>${currentTime} - ${start}</span>
+                        </div>
+                    `;
+                }
+
+                output += `
+                    <div class="gantt-block"
+                         style="width:${duration * 35}px">
+                        <strong>Order ${order.order_id}</strong>
+                        <span>${start} - ${order.completionTime}</span>
+                    </div>
+                `;
+
+                currentTime = order.completionTime;
+            });
+
+            output += `
+                </div>
+
+                <h3>Execution Results</h3>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Execution Order</th>
+                            <th>Order ID</th>
+                            <th>Arrival</th>
+                            <th>Preparation</th>
+                            <th>Priority</th>
+                            <th>Completion</th>
+                            <th>Waiting</th>
+                            <th>Turnaround</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            result.orders.forEach((order, index) => {
+                output += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${order.order_id}</td>
+                        <td>${order.arrivalTime}</td>
+                        <td>${order.prepTime}</td>
+                        <td>${order.priority}</td>
+                        <td>${order.completionTime}</td>
+                        <td>${order.waitingTime}</td>
+                        <td>${order.turnaroundTime}</td>
+                    </tr>
+                `;
+            });
+
+            output += `
+                    </tbody>
+                </table>
+
+                <p><em>Simulation only: database order statuses are not changed.</em></p>
+            `;
+
+            resultDiv.innerHTML = output;
+
+        } catch (error) {
+            resultDiv.innerHTML =
+                `<p style="color:red;">Error: ${error.message}</p>`;
+        }
+    }
+
+    async function dispatchNextOrder() {
+        const algorithm = document.getElementById("algorithm").value;
+        const restaurantId = document.getElementById("dispatchRestaurant").value;
+        const message = document.getElementById("dispatchMessage");
+
+        if (!restaurantId) {
+            message.textContent = "Please select a restaurant.";
+            return;
         }
 
+        message.textContent = "Scheduling and dispatching the next order...";
 
-        function loadDeliveries() {
+        try {
+            const response = await fetch("http://localhost:3000/schedule/dispatch", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    algorithm: algorithm,
+                    restaurant_id: Number(restaurantId)
+                })
+            });
 
-            fetch("http://localhost:3000/deliveries")
-                .then(response => response.json())
-                .then(data => {
+            const responseText = await response.text();
 
-                    let output = "<h2>Deliveries</h2>";
+            let result;
 
-                    data.forEach(delivery => {
+            try {
+                result = JSON.parse(responseText);
+            } catch (error) {
+                throw new Error("Server response: " + responseText);
+            }
 
-                        output += `
-                            <p>
-                                Delivery ${delivery.delivery_id}
-                                |
-                                Order ${delivery.order_id}
-                                |
-                                Agent ${delivery.agent_id}
-                                |
-                                ${delivery.status}
-                            </p>
-                        `;
-                    });
+            if (!response.ok) {
+                throw new Error(result.error || "Dispatch failed");
+            }
 
-                    document.getElementById("data").innerHTML = output;
-                });
+            if (!result.dispatched) {
+                message.textContent = result.message;
+            } else {
+                message.innerHTML = `
+                    <p style="color:green;">
+                        <strong>${result.message}</strong>
+                    </p>
+                    <p>Algorithm: ${result.algorithm}</p>
+                    <p>Order ID: ${result.order.order_id}</p>
+                    <p>Preparation time: ${result.order.prepTime} minutes</p>
+                    <p>Waiting time: ${result.order.waitingTime} minutes</p>
+                `;
+            }
+
+            await loadDashboardOverview();
+            await loadOrders();
+            await loadDeliveryOptions();
+
+        } catch (error) {
+            message.innerHTML = `
+                <p style="color:red;">${error.message}</p>
+            `;
+        }
+    }
+
+    async function loadRestaurants() {
+        const select = document.getElementById("dispatchRestaurant");
+
+        select.innerHTML = '<option value="">Loading restaurants...</option>';
+
+        try {
+            const response = await fetch("http://localhost:3000/restaurants");
+
+            if (!response.ok) {
+                throw new Error("HTTP Error: " + response.status);
+            }
+
+            const data = await response.json();
+
+            const restaurants = Array.isArray(data)
+                ? data
+                : data.restaurants;
+
+            if (!Array.isArray(restaurants)) {
+                throw new Error("Unexpected restaurant data format");
+            }
+
+            select.innerHTML = '<option value="">Select a restaurant</option>';
+
+            restaurants.forEach(restaurant => {
+                const id = restaurant.restaurant_id;
+                const name = restaurant.name;
+
+                if (id !== undefined && name) {
+                    const option = document.createElement("option");
+                    option.value = id;
+                    option.textContent = name;
+                    select.appendChild(option);
+                }
+            });
+
+            if (select.options.length === 1) {
+                select.innerHTML = '<option value="">No restaurants found</option>';
+            }
+
+        } catch (error) {
+            console.error("Restaurant loading error:", error);
+            select.innerHTML = '<option value="">Could not load restaurants</option>';
+        }
+    }
+
+    async function compareAlgorithms() {
+        const resultDiv = document.getElementById("schedulerResult");
+        resultDiv.innerHTML = "<p style='color:#64748b;'>⚡ Executing C++ Engine across FCFS, SJF, and Priority algorithms simultaneously...</p>";
+
+        try {
+            const res = await fetch(`${API_BASE}/schedule/compare`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (!res.ok) throw new Error("C++ Comparison failed");
+            const data = await res.json();
+
+            const results = data.results || [];
+            if (results.length === 0) {
+                resultDiv.innerHTML = "<p>No orders available to compare.</p>";
+                return;
+            }
+
+            let output = `
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:18px; margin-top:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <h3 style="margin:0; font-size:18px; color:#0f172a; font-weight:800;">
+                            📊 C++ Scheduling Engine: Algorithm Benchmark Comparison
+                        </h3>
+                        <span style="background:#22c55e; color:white; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px;">
+                            Optimal: ${data.bestAlgorithm} (${data.lowestAverageWaitingTime} mins avg wait)
+                        </span>
+                    </div>
+
+                    ${data.isDemoBatch ? '<p style="font-size:12px; color:#64748b; margin-bottom:12px;">ℹ️ Using benchmark test batch of 4 concurrent orders to simulate varying burst times &amp; priorities.</p>' : ''}
+
+                    <table class="comparison-table" style="width:100%; border-collapse:collapse; margin-bottom:16px;">
+                        <thead>
+                            <tr style="background:#f1f5f9; text-align:left;">
+                                <th style="padding:10px 12px; border-radius:6px 0 0 6px;">Algorithm</th>
+                                <th style="padding:10px 12px;">Avg Waiting Time (mins)</th>
+                                <th style="padding:10px 12px;">Avg Turnaround Time (mins)</th>
+                                <th style="padding:10px 12px; border-radius:0 6px 6px 0;">Execution Sequence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            results.forEach(r => {
+                const isBest = r.algorithm === data.bestAlgorithm;
+                const orderSeq = r.orders.map(o => `#${o.order_id}`).join(" → ");
+                output += `
+                    <tr style="${isBest ? 'background:#ecfdf5; font-weight:700; color:#065f46;' : 'border-bottom:1px solid #e2e8f0;'}">
+                        <td style="padding:10px 12px;">
+                            ${isBest ? '👑 ' : ''}${r.algorithm}
+                            ${isBest ? '<span style="font-size:11px; background:#10b981; color:white; padding:2px 6px; border-radius:4px; margin-left:6px;">BEST</span>' : ''}
+                        </td>
+                        <td style="padding:10px 12px;">${r.averageWaitingTime} mins</td>
+                        <td style="padding:10px 12px;">${r.averageTurnaroundTime} mins</td>
+                        <td style="padding:10px 12px; font-family:monospace; color:#3b82f6;">${orderSeq}</td>
+                    </tr>
+                `;
+            });
+
+            output += `
+                        </tbody>
+                    </table>
+
+                    <div style="background:#ffffff; border-left:4px solid #3b82f6; padding:12px; border-radius:0 8px 8px 0; font-size:13px; color:#334155;">
+                        <strong>OS Theory Note:</strong> ${data.summary} Shortest Job First (SJF) is provably optimal for minimizing average waiting time in non-preemptive batches, while Priority Scheduling ensures VIP / Express customers receive low dispatch latency.
+                    </div>
+                </div>
+            `;
+
+            resultDiv.innerHTML = output;
+
+        } catch (error) {
+            resultDiv.innerHTML = `<p style="color:#ef4444;">Error running C++ comparison: ${error.message}</p>`;
+        }
+    }
+
+    async function loadDeliveryOptions() {
+        const orderSelect = document.getElementById("deliveryOrder");
+        const agentSelect = document.getElementById("deliveryAgent");
+        const message = document.getElementById("deliveryMessage");
+
+        try {
+            const [ordersResponse, agentsResponse] = await Promise.all([
+                fetch("http://localhost:3000/orders"),
+                fetch("http://localhost:3000/agents")
+            ]);
+
+            if (!ordersResponse.ok || !agentsResponse.ok) {
+                throw new Error("Could not load orders or agents.");
+            }
+
+            const [orders, agents] = await Promise.all([
+                ordersResponse.json(),
+                agentsResponse.json()
+            ]);
+
+            orderSelect.innerHTML = '<option value="">Select an order</option>';
+            agentSelect.innerHTML = '<option value="">Select an agent</option>';
+
+            orders.filter(order => order.status === "Ready").forEach(order => {
+                orderSelect.add(new Option(
+                    `Order ${order.order_id} - ${order.customer_name}`,
+                    order.order_id
+                ));
+            });
+
+            agents.filter(agent => agent.status === "Available").forEach(agent => {
+                agentSelect.add(new Option(
+                    `Agent ${agent.agent_id} - ${agent.name}`,
+                    agent.agent_id
+                ));
+            });
+
+            message.textContent = "Delivery options refreshed.";
+
+        } catch (error) {
+            message.textContent = error.message;
+        }
+    }
+
+    async function assignDelivery() {
+        const order_id = document.getElementById("deliveryOrder").value;
+        const agent_id = document.getElementById("deliveryAgent").value;
+        const message = document.getElementById("deliveryMessage");
+
+        if (!order_id || !agent_id) {
+            message.textContent = "Select both a ready order and an available agent.";
+            return;
         }
 
-    </script>
+        try {
+            const response = await fetch("http://localhost:3000/delivery", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    order_id: Number(order_id),
+                    agent_id: Number(agent_id)
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Assignment failed.");
+            }
+
+            message.textContent =
+                `Delivery ${result.delivery_id} assigned successfully.`;
+
+            await loadDeliveryOptions();
+            await loadAgents();
+            await loadDeliveries();
+            await loadDashboardOverview();
+
+        } catch (error) {
+            message.textContent = error.message;
+        }
+    }
+
+    async function completeDelivery() {
+        const id = document.getElementById("completeDeliveryId").value;
+        const message = document.getElementById("completeMessage");
+
+        if (!id || Number(id) < 1) {
+            message.textContent = "Enter a valid delivery ID.";
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:3000/deliveries/${Number(id)}/complete`,
+                { method: "PUT" }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Could not complete delivery.");
+            }
+
+            message.textContent =
+                `Delivery ${result.delivery_id} completed successfully.`;
+
+            await loadDeliveryOptions();
+            await loadAgents();
+            await loadDeliveries();
+            await loadDashboardOverview();
+
+        } catch (error) {
+            message.textContent = error.message;
+        }
+    }
+
+    // ==========================================
+    // DEADLOCK DETECTION & RESOLUTION MODULE
+    // ==========================================
+
+    function resetDeadlockDemo() {
+        document.getElementById("alloc-0-0").textContent = "1";
+        document.getElementById("alloc-0-1").textContent = "0";
+        document.getElementById("alloc-1-0").textContent = "0";
+        document.getElementById("alloc-1-1").textContent = "1";
+
+        document.getElementById("req-0-0").textContent = "0";
+        document.getElementById("req-0-1").textContent = "1";
+        document.getElementById("req-1-0").textContent = "1";
+        document.getElementById("req-1-1").textContent = "0";
+
+        document.getElementById("deadlockResult").innerHTML = "";
+    }
+
+    async function runDeadlockDetection() {
+        const resultDiv = document.getElementById("deadlockResult");
+        resultDiv.innerHTML = "<p>Running C++ Deadlock Detection algorithm...</p>";
+
+        try {
+            const response = await fetch("http://localhost:3000/deadlock/detect", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Deadlock check failed");
+
+            // Update UI table values
+            document.getElementById("alloc-0-0").textContent = data.allocation[0][0];
+            document.getElementById("alloc-0-1").textContent = data.allocation[0][1];
+            document.getElementById("alloc-1-0").textContent = data.allocation[1][0];
+            document.getElementById("alloc-1-1").textContent = data.allocation[1][1];
+
+            document.getElementById("req-0-0").textContent = data.request[0][0];
+            document.getElementById("req-0-1").textContent = data.request[0][1];
+            document.getElementById("req-1-0").textContent = data.request[1][0];
+            document.getElementById("req-1-1").textContent = data.request[1][1];
+
+            const badgeBg = data.deadlock ? "#fee2e2" : "#dcfce7";
+            const badgeColor = data.deadlock ? "#991b1b" : "#166534";
+            const statusText = data.deadlock ? "⚠️ DEADLOCK DETECTED" : "✅ SAFE STATE (NO DEADLOCK)";
+
+            resultDiv.innerHTML = `
+                <div style="background:${badgeBg}; border:1px solid ${data.deadlock ? '#fca5a5' : '#86efac'}; border-radius:10px; padding:18px;">
+                    <h3 style="margin:0 0 10px; color:${badgeColor}; font-size:16px;">${statusText}</h3>
+                    <p style="margin:0 0 8px; color:#1e293b;"><strong>Analysis:</strong> ${data.explanation}</p>
+                    <p style="margin:0 0 8px; color:#1e293b;"><strong>Resolution Strategy:</strong> ${data.resolution}</p>
+                    <div style="margin-top:10px; font-size:12px; color:#64748b; font-family:monospace;">
+                        Process Dependencies: P0 (Holds R0, Needs R1) ⇄ P1 (Holds R1, Needs R0) [Circular Wait]
+                    </div>
+                </div>
+            `;
+        } catch (err) {
+            resultDiv.innerHTML = `<p style="color:#dc2626;">Error: ${err.message}</p>`;
+        }
+    }
+
+    async function resolveDeadlock() {
+        const resultDiv = document.getElementById("deadlockResult");
+        resultDiv.innerHTML = "<p>Applying deadlock preemption & canonical resource ordering...</p>";
+
+        try {
+            const response = await fetch("http://localhost:3000/deadlock/resolve", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Deadlock resolution failed");
+
+            // Update UI matrix values
+            document.getElementById("alloc-0-0").textContent = data.allocation[0][0];
+            document.getElementById("alloc-0-1").textContent = data.allocation[0][1];
+            document.getElementById("alloc-1-0").textContent = data.allocation[1][0];
+            document.getElementById("alloc-1-1").textContent = data.allocation[1][1];
+
+            document.getElementById("req-0-0").textContent = data.request[0][0];
+            document.getElementById("req-0-1").textContent = data.request[0][1];
+            document.getElementById("req-1-0").textContent = data.request[1][0];
+            document.getElementById("req-1-1").textContent = data.request[1][1];
+
+            resultDiv.innerHTML = `
+                <div style="background:#dcfce7; border:1px solid #86efac; border-radius:10px; padding:18px;">
+                    <h3 style="margin:0 0 10px; color:#166534; font-size:16px;">✅ DEADLOCK PREVENTED &amp; RESOLVED</h3>
+                    <p style="margin:0 0 8px; color:#1e293b;"><strong>Outcome:</strong> ${data.explanation}</p>
+                    <p style="margin:0 0 8px; color:#1e293b;"><strong>Applied Policy:</strong> ${data.resolution}</p>
+                    <div style="margin-top:10px; font-size:12px; color:#15803d; font-family:monospace;">
+                        Progress Flow: Order 1 acquires Agent R1 → Completes → Frees Kitchen R0 → Order 2 acquires Kitchen R0 → Completes!
+                    </div>
+                </div>
+            `;
+        } catch (err) {
+            resultDiv.innerHTML = `<p style="color:#dc2626;">Error: ${err.message}</p>`;
+        }
+    }
+
+    // ==========================================
+    // ACCOUNT APPROVALS & ADMIN AUTH MODULE
+    // ==========================================
+
+    let adminToken = sessionStorage.getItem("ordercoreAdminToken") || "";
+
+    function toggleAdminLoginModal() {
+        const modal = document.getElementById("adminAuthModal");
+        if (modal) {
+            modal.style.display = modal.style.display === "none" ? "flex" : "none";
+        }
+        const box = document.getElementById("adminLoginBox");
+        if (box) {
+            box.style.display = box.style.display === "none" ? "block" : "none";
+        }
+    }
+
+    function quickAdminLogin() {
+        const emailInput = document.getElementById("modalAdminEmail") || document.getElementById("adminEmail");
+        const passInput = document.getElementById("modalAdminPassword") || document.getElementById("adminPassword");
+        if (emailInput) emailInput.value = "admin@ordercore.com";
+        if (passInput) passInput.value = "admin123";
+        performAdminLogin();
+    }
+
+    async function performAdminLogin() {
+        const modalEmail = document.getElementById("modalAdminEmail");
+        const inlineEmail = document.getElementById("adminEmail");
+        const modalPass = document.getElementById("modalAdminPassword");
+        const inlinePass = document.getElementById("adminPassword");
+
+        const email = (modalEmail && modalEmail.value) ? modalEmail.value.trim() : (inlineEmail ? inlineEmail.value.trim() : "admin@ordercore.com");
+        const password = (modalPass && modalPass.value) ? modalPass.value : (inlinePass ? inlinePass.value : "admin123");
+
+        const errDiv = document.getElementById("adminModalError") || document.getElementById("adminLoginError");
+        if (errDiv) {
+            errDiv.textContent = "";
+            errDiv.style.display = "none";
+        }
+
+        try {
+            let response = await fetch("http://localhost:3000/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password, role: "admin" })
+            });
+
+            let data = await response.json();
+
+            // Auto-heal: If database hasn't seeded demo users yet, trigger seed endpoint and retry
+            if (!response.ok && response.status === 401) {
+                try {
+                    await fetch("http://localhost:3000/auth/seed-users", { method: "POST" });
+                    const retryRes = await fetch("http://localhost:3000/auth/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password, role: "admin" })
+                    });
+                    if (retryRes.ok) {
+                        data = await retryRes.json();
+                        response = retryRes;
+                    }
+                } catch(seedRetryErr) {}
+            }
+
+            if (!response.ok) throw new Error(data.message || "Admin login failed.");
+
+            adminToken = data.token;
+            sessionStorage.setItem("ordercoreAdminToken", adminToken);
+
+            const modal = document.getElementById("adminAuthModal");
+            if (modal) modal.style.display = "none";
+            const box = document.getElementById("adminLoginBox");
+            if (box) box.style.display = "none";
+
+            checkAdminAuth();
+            await loadPendingUsers();
+        } catch (err) {
+            if (errDiv) {
+                errDiv.innerHTML = `${escapeHTML(err.message)}<br><small style="color:#64748b; font-weight:600;">(Please restart backend: <code style="color:#0f172a;">npm start</code> or run <code style="color:#0f172a;">npm run seed</code>)</small>`;
+                errDiv.style.display = "block";
+            }
+        }
+    }
+
+    function adminLogout() {
+        adminToken = "";
+        sessionStorage.removeItem("ordercoreAdminToken");
+        checkAdminAuth();
+        document.getElementById("pendingAccountsList").innerHTML =
+            "<p style='color:#64748b;'>Login as admin to view and approve pending accounts.</p>";
+    }
+
+    function checkAdminAuth() {
+        const text = document.getElementById("adminAuthText");
+        const btn = document.getElementById("adminAuthBtn");
+        const topStatus = document.getElementById("topAdminStatus");
+        const topBtn = document.getElementById("topAdminBtn");
+
+        if (adminToken) {
+            if (text) text.innerHTML = "<strong>Authenticated as Administrator</strong> (<span style='color:#16a34a;'>Online</span>)";
+            if (btn) {
+                btn.textContent = "Log Out";
+                btn.onclick = adminLogout;
+            }
+            if (topStatus) {
+                topStatus.innerHTML = "<span style='color:#16a34a;'>●</span> Admin Online (admin@ordercore.com)";
+                topStatus.style.background = "#dcfce7";
+                topStatus.style.color = "#166534";
+            }
+            if (topBtn) {
+                topBtn.textContent = "Log Out";
+                topBtn.style.background = "#64748b";
+                topBtn.onclick = adminLogout;
+            }
+        } else {
+            if (text) text.innerHTML = "Not logged in as Administrator. Pending approvals require admin credentials.";
+            if (btn) {
+                btn.textContent = "Admin Login";
+                btn.onclick = toggleAdminLoginModal;
+            }
+            if (topStatus) {
+                topStatus.innerHTML = "● Administrator (Logged Out)";
+                topStatus.style.background = "#fee2e2";
+                topStatus.style.color = "#991b1b";
+            }
+            if (topBtn) {
+                topBtn.textContent = "Admin Log In";
+                topBtn.style.background = "#E23744";
+                topBtn.onclick = toggleAdminLoginModal;
+            }
+        }
+    }
+
+    async function loadPendingUsers() {
+        const listDiv = document.getElementById("pendingAccountsList");
+        const countSpan = document.getElementById("pendingCount");
+
+        if (!adminToken) {
+            listDiv.innerHTML = "<p style='color:#64748b;'>Please log in as an administrator to load pending accounts.</p>";
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:3000/admin/pending-users", {
+                headers: { "Authorization": `Bearer ${adminToken}` }
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.message || "Failed to fetch pending users");
+            }
+
+            const users = await response.json();
+            countSpan.textContent = users.length;
+
+            if (users.length === 0) {
+                listDiv.innerHTML = "<p style='color:#16a34a;'>✅ No pending accounts awaiting review.</p>";
+                return;
+            }
+
+            let html = `
+                <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:10px;">
+                    <thead>
+                        <tr style="background:#e2e8f0; text-align:left;">
+                            <th style="padding:8px;">ID</th>
+                            <th style="padding:8px;">Name</th>
+                            <th style="padding:8px;">Email</th>
+                            <th style="padding:8px;">Role</th>
+                            <th style="padding:8px;">Registered At</th>
+                            <th style="padding:8px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(u => {
+                const roleBadge = u.role === "restaurant" ? "🍳 Restaurant" : "🛵 Delivery Agent";
+                html += `
+                    <tr style="border-bottom:1px solid #e2e8f0;">
+                        <td style="padding:8px;">${u.user_id}</td>
+                        <td style="padding:8px; font-weight:600;">${escapeHTML(u.name)}</td>
+                        <td style="padding:8px;">${escapeHTML(u.email)}</td>
+                        <td style="padding:8px;"><span style="background:#e0e7ff; color:#3730a3; padding:3px 8px; border-radius:12px; font-size:11px;">${roleBadge}</span></td>
+                        <td style="padding:8px; color:#64748b;">${new Date(u.created_at).toLocaleString()}</td>
+                        <td style="padding:8px;">
+                            <button onclick="updateUserStatus(${u.user_id}, 'Approved')" style="background:#16a34a; padding:5px 10px; font-size:12px; margin-right:5px;">Approve</button>
+                            <button onclick="updateUserStatus(${u.user_id}, 'Rejected')" style="background:#dc2626; padding:5px 10px; font-size:12px;">Reject</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += "</tbody></table>";
+            listDiv.innerHTML = html;
+        } catch (err) {
+            listDiv.innerHTML = `<p style="color:#dc2626;">Error: ${err.message}</p>`;
+        }
+    }
+
+    async function updateUserStatus(userId, status) {
+        if (!confirm(`Are you sure you want to set account #${userId} to ${status}?`)) return;
+
+        try {
+            const response = await fetch(`http://localhost:3000/admin/users/${userId}/status`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${adminToken}`
+                },
+                body: JSON.stringify({ status })
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || "Failed to update status");
+
+            alert(data.message);
+            await loadPendingUsers();
+            await loadDashboardOverview();
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    }
+
+    async function loadAllRegisteredUsers() {
+        const div = document.getElementById("allUsersList");
+        div.innerHTML = "<p>Loading all registered accounts...</p>";
+
+        if (!adminToken) {
+            div.innerHTML = "<p style='color:#64748b;'>Admin login required.</p>";
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:3000/admin/users", {
+                headers: { "Authorization": `Bearer ${adminToken}` }
+            });
+
+            if (!response.ok) throw new Error("Failed to load user list");
+            const users = await response.json();
+
+            let html = `
+                <h4 style="margin:15px 0 10px;">All Registered System Accounts (${users.length})</h4>
+                <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                    <thead>
+                        <tr style="background:#e2e8f0; text-align:left;">
+                            <th style="padding:8px;">ID</th>
+                            <th style="padding:8px;">Name</th>
+                            <th style="padding:8px;">Email</th>
+                            <th style="padding:8px;">Role</th>
+                            <th style="padding:8px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(u => {
+                const statusColor = u.status === 'Approved' ? '#16a34a' : (u.status === 'Pending' ? '#d97706' : '#dc2626');
+                html += `
+                    <tr style="border-bottom:1px solid #e2e8f0;">
+                        <td style="padding:8px;">${u.user_id}</td>
+                        <td style="padding:8px; font-weight:600;">${escapeHTML(u.name)}</td>
+                        <td style="padding:8px;">${escapeHTML(u.email)}</td>
+                        <td style="padding:8px;">${escapeHTML(u.role)}</td>
+                        <td style="padding:8px; font-weight:bold; color:${statusColor};">${escapeHTML(u.status)}</td>
+                    </tr>
+                `;
+            });
+
+            html += "</tbody></table>";
+            div.innerHTML = html;
+        } catch (err) {
+            div.innerHTML = `<p style="color:#dc2626;">Error: ${err.message}</p>`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadRestaurants();
+        loadDeliveryOptions();
+        loadDashboardOverview();
+        checkAdminAuth();
+        if (adminToken) {
+            loadPendingUsers();
+        }
+    });
+</script>
+
+<!-- ADMIN AUTH MODAL OVERLAY -->
+<div id="adminAuthModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:white; width:100%; max-width:440px; border-radius:18px; padding:28px; box-shadow:0 20px 40px rgba(0,0,0,0.25); position:relative;">
+        <button onclick="toggleAdminLoginModal()" style="position:absolute; top:18px; right:18px; background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-size:18px; cursor:pointer; color:#64748b; display:flex; align-items:center; justify-content:center;">&times;</button>
+        <h3 style="font-size:22px; font-weight:800; color:#0f172a; margin-bottom:6px;">Administrator Sign In</h3>
+        <p style="font-size:13px; color:#64748b; margin-bottom:20px;">Authenticate with System Admin credentials to verify and approve accounts.</p>
+
+        <div id="adminModalError" style="background:#fee2e2; color:#991b1b; padding:10px 14px; border-radius:8px; font-size:13px; font-weight:600; margin-bottom:14px; display:none;"></div>
+
+        <div style="margin-bottom:14px;">
+            <label style="display:block; font-size:12.5px; font-weight:700; color:#334155; margin-bottom:6px;">Admin Email</label>
+            <input type="email" id="modalAdminEmail" value="admin@ordercore.com" style="width:100%; padding:11px 14px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; margin:0;">
+        </div>
+
+        <div style="margin-bottom:18px;">
+            <label style="display:block; font-size:12.5px; font-weight:700; color:#334155; margin-bottom:6px;">Password</label>
+            <input type="password" id="modalAdminPassword" value="admin123" style="width:100%; padding:11px 14px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; margin:0;">
+        </div>
+
+        <button onclick="performAdminLogin()" style="width:100%; background:#E23744; color:white; border:none; padding:13px; border-radius:8px; font-size:14.5px; font-weight:800; cursor:pointer; margin:0;">
+            Log In as Administrator
+        </button>
+
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px; margin-top:20px;">
+            <div style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">1-Click Admin Fill</div>
+            <div onclick="quickAdminLogin()" style="background:white; border:1px solid #e2e8f0; padding:10px 14px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+                <span>🔑 <strong>admin@ordercore.com</strong> (admin123)</span>
+                <span style="color:#16a34a; font-size:12px; font-weight:700;">Fill &rarr;</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

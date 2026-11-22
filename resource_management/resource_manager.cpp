@@ -1,15 +1,22 @@
+
 #include "resource_manager.h"
 #include <iostream>
+#include <mutex>
+
 using namespace std;
 
 void ResourceManager::addAgent(int id, string name)
 {
+    lock_guard<mutex> lock(agentMutex);
+
     Agent a(id, name);
     agents.push_back(a);
 }
 
 void ResourceManager::showAgents()
 {
+    lock_guard<mutex> lock(agentMutex);
+
     for (int i = 0; i < agents.size(); i++)
     {
         agents[i].showAgent();
@@ -19,6 +26,8 @@ void ResourceManager::showAgents()
 
 bool ResourceManager::assignAgent()
 {
+    lock_guard<mutex> lock(agentMutex);
+
     for (int i = 0; i < agents.size(); i++)
     {
         if (agents[i].available)
@@ -36,20 +45,24 @@ bool ResourceManager::assignAgent()
     return false;
 }
 
-void ResourceManager::releaseAgent()
+bool ResourceManager::releaseAgent(int agentId)
 {
+    lock_guard<mutex> lock(agentMutex);
+
     for (int i = 0; i < agents.size(); i++)
     {
-        if (!agents[i].available)
+        if (agents[i].agent_id == agentId &&
+            !agents[i].available)
         {
             agents[i].available = true;
 
             cout << "Agent " << agents[i].name
                  << " released." << endl;
 
-            return;
+            return true;
         }
     }
 
-    cout << "No busy agent found." << endl;
+    cout << "Agent not found or is not busy." << endl;
+    return false;
 }

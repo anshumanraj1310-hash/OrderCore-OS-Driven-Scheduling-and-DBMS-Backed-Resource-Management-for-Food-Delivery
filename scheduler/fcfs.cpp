@@ -1,29 +1,42 @@
+
 #include <iostream>
+#include <algorithm>
 #include "scheduler.h"
 
 using namespace std;
 
 void fcfs(Order orders[], int n)
 {
+    // Sort orders by arrival time, then by order ID
+    sort(orders, orders + n, [](const Order& a, const Order& b)
+    {
+        if (a.arrivalTime == b.arrivalTime)
+        {
+            return a.id < b.id;
+        }
+
+        return a.arrivalTime < b.arrivalTime;
+    });
+
     int currentTime = 0;
 
     for (int i = 0; i < n; i++)
     {
-        // If the CPU is free before the order arrives
+        // Wait until the order arrives
         if (currentTime < orders[i].arrivalTime)
         {
             currentTime = orders[i].arrivalTime;
         }
 
-        // Completion Time
-        currentTime = currentTime + orders[i].prepTime;
+        // Calculate completion time
+        currentTime += orders[i].prepTime;
         orders[i].completionTime = currentTime;
 
-        // Turnaround Time
+        // Calculate turnaround time
         orders[i].turnaroundTime =
             orders[i].completionTime - orders[i].arrivalTime;
 
-        // Waiting Time
+        // Calculate waiting time
         orders[i].waitingTime =
             orders[i].turnaroundTime - orders[i].prepTime;
     }
