@@ -1432,9 +1432,17 @@
         }
 
         try {
+            const headers = { "Content-Type": "application/json" };
+            if (adminToken) {
+                headers["Authorization"] = `Bearer ${adminToken}`;
+            }
+
             const response = await fetch(
                 `http://localhost:3000/deliveries/${Number(id)}/complete`,
-                { method: "PUT" }
+                {
+                    method: "PUT",
+                    headers: headers
+                }
             );
 
             const result = await response.json();
