@@ -334,6 +334,34 @@
         .ticket-card.status-ready    { border-left-color: var(--green);  background: #f0fdf4; }
         .ticket-card.status-cancelled { border-left-color: var(--grey);   background: #f8fafc; }
 
+        /* ── PRIORITY DISTINCTION ── */
+        .ticket-card.priority-express {
+            border-left: 5px solid #f59e0b;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef9e7 100%);
+            box-shadow: 0 2px 8px rgba(245,158,11,.18);
+        }
+        .ticket-card.priority-express .ticket-head {
+            background: linear-gradient(90deg, #fffbeb, #fef3c7);
+        }
+        .express-gold-banner {
+            display: flex; align-items: center; gap: 6px;
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            color: white; font-size: 10.5px; font-weight: 800;
+            padding: 4px 12px; letter-spacing: .5px;
+            text-transform: uppercase;
+        }
+        .express-gold-banner::before { content: '👑'; font-size: 12px; }
+        .standard-banner {
+            display: flex; align-items: center; gap: 6px;
+            background: #0f172a;
+            color: #cbd5e1; font-size: 10.5px; font-weight: 700;
+            padding: 4px 12px; letter-spacing: .5px;
+            text-transform: uppercase;
+        }
+        .standard-banner::before { content: '⚡'; font-size: 12px; }
+        .os-pill-express { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; font-weight: 800; }
+        .os-pill-normal  { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
+
         .ticket-head {
             display: flex; align-items: center; justify-content: space-between;
             padding: 14px 18px 10px;
@@ -415,8 +443,7 @@
             display: inline-flex; align-items: center; gap: 4px;
         }
         .os-pill-prep { background: #e0f2fe; color: #0369a1; }
-        .os-pill-express { background: #fef3c7; color: #b45309; }
-        .os-pill-normal  { background: #f0fdf4; color: #15803d; }
+        /* express/normal pills now defined above in priority block */
 
         .ticket-action-bar {
             display: flex; gap: 10px; align-items: center;
@@ -1010,9 +1037,14 @@
 
                 const isExpress = order.priority === 1 || order.priority === "1";
                 const initials  = (order.customer_name || "?")[0].toUpperCase();
+                const priorityClass = isExpress ? "priority-express" : "";
 
                 return `
-                <div class="ticket-card ${cardClass}">
+                <div class="ticket-card ${cardClass} ${priorityClass}">
+                    <!-- PRIORITY BANNER -->
+                    <div class="${isExpress ? 'express-gold-banner' : 'standard-banner'}">
+                        ${isExpress ? 'EXPRESS GOLD — Priority 1 — Rush Order' : 'Standard Order — Priority 2'}
+                    </div>
                     <!-- HEAD -->
                     <div class="ticket-head">
                         <div>

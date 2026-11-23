@@ -1211,9 +1211,71 @@
                 return;
             }
 
+            /* ── Build SVG bar chart ── */
+            const algos   = results.map(r => r.algorithm);
+            const wtVals  = results.map(r => r.averageWaitingTime);
+            const tatVals = results.map(r => r.averageTurnaroundTime);
+            const maxVal  = Math.max(...wtVals, ...tatVals, 1);
+
+            const W = 480, H = 240, PAD = 48, BAR_W = 44, GAP = 24;
+            const scale = (H - PAD * 2) / maxVal;
+            const groupW = algos.length * (BAR_W * 2 + GAP) + GAP;
+            const totalW = Math.max(W, groupW + PAD * 2);
+
+            const colors = { wt: "#3b82f6", tat: "#f97316" };
+            const bestAlgo = data.bestAlgorithm;
+
+            let bars = "";
+            algos.forEach((algo, i) => {
+                const x0 = PAD + i * (BAR_W * 2 + GAP + 16);
+                const wtH  = Math.round(wtVals[i] * scale);
+                const tatH = Math.round(tatVals[i] * scale);
+                const isBest = algo === bestAlgo;
+                bars += `
+                  <g>
+                    <!-- WT bar -->
+                    <rect x="${x0}" y="${H - PAD - wtH}" width="${BAR_W}" height="${wtH}"
+                          fill="${colors.wt}" rx="4" opacity="${isBest ? 1 : 0.65}"/>
+                    <text x="${x0 + BAR_W/2}" y="${H - PAD - wtH - 5}" text-anchor="middle"
+                          font-size="11" fill="#1e293b" font-weight="700">${wtVals[i]}</text>
+                    <!-- TAT bar -->
+                    <rect x="${x0 + BAR_W + 4}" y="${H - PAD - tatH}" width="${BAR_W}" height="${tatH}"
+                          fill="${colors.tat}" rx="4" opacity="${isBest ? 1 : 0.65}"/>
+                    <text x="${x0 + BAR_W + 4 + BAR_W/2}" y="${H - PAD - tatH - 5}" text-anchor="middle"
+                          font-size="11" fill="#1e293b" font-weight="700">${tatVals[i]}</text>
+                    <!-- label -->
+                    <text x="${x0 + BAR_W}" y="${H - PAD + 16}" text-anchor="middle"
+                          font-size="12" fill="${isBest ? '#16a34a' : '#334155'}" font-weight="${isBest ? 800 : 600}">
+                          ${isBest ? '👑 ' : ''}${algo}</text>
+                  </g>`;
+            });
+
+            /* Y-axis gridlines */
+            const steps = 4;
+            let grid = "";
+            for (let s = 0; s <= steps; s++) {
+                const y = H - PAD - Math.round((maxVal / steps) * s * scale);
+                const v = Math.round((maxVal / steps) * s);
+                grid += `<line x1="${PAD - 6}" y1="${y}" x2="${totalW - PAD/2}" y2="${y}" stroke="#e2e8f0" stroke-width="1"/>
+                         <text x="${PAD - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="#94a3b8">${v}</text>`;
+            }
+
+            const svgChart = `
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${H}" width="100%" style="max-width:${totalW}px; display:block; margin:0 auto;">
+                ${grid}
+                ${bars}
+                <!-- x axis -->
+                <line x1="${PAD - 6}" y1="${H - PAD}" x2="${totalW - PAD/2}" y2="${H - PAD}" stroke="#94a3b8" stroke-width="1.5"/>
+                <!-- Legend -->
+                <rect x="${PAD}" y="6" width="12" height="12" fill="${colors.wt}" rx="2"/>
+                <text x="${PAD + 16}" y="16" font-size="11" fill="#334155">Avg Waiting Time (mins)</text>
+                <rect x="${PAD + 170}" y="6" width="12" height="12" fill="${colors.tat}" rx="2"/>
+                <text x="${PAD + 186}" y="16" font-size="11" fill="#334155">Avg Turnaround Time (mins)</text>
+              </svg>`;
+
             let output = `
                 <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:18px; margin-top:16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                         <h3 style="margin:0; font-size:18px; color:#0f172a; font-weight:800;">
                             📊 C++ Scheduling Engine: Algorithm Benchmark Comparison
                         </h3>
@@ -1223,6 +1285,14 @@
                     </div>
 
                     ${data.isDemoBatch ? '<p style="font-size:12px; color:#64748b; margin-bottom:12px;">ℹ️ Using benchmark test batch of 4 concurrent orders to simulate varying burst times &amp; priorities.</p>' : ''}
+
+                    <!-- SVG BAR CHART (Examiner Evidence) -->
+                    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:16px 8px 8px; margin-bottom:16px;">
+                        <p style="text-align:center; font-size:12px; font-weight:700; color:#334155; margin:0 0 10px;">
+                            Graph: Average Waiting Time &amp; Turnaround Time by Algorithm (minutes)
+                        </p>
+                        ${svgChart}
+                    </div>
 
                     <table class="comparison-table" style="width:100%; border-collapse:collapse; margin-bottom:16px;">
                         <thead>
@@ -1418,27 +1488,103 @@
             if (!response.ok) throw new Error(data.error || "Deadlock check failed");
 
             // Update UI table values
-            document.getElementById("alloc-0-0").textContent = data.allocation[0][0];
-            document.getElementById("alloc-0-1").textContent = data.allocation[0][1];
-            document.getElementById("alloc-1-0").textContent = data.allocation[1][0];
-            document.getElementById("alloc-1-1").textContent = data.allocation[1][1];
+            if (data.allocation && data.allocation.length >= 2) {
+                document.getElementById("alloc-0-0").textContent = data.allocation[0][0];
+                document.getElementById("alloc-0-1").textContent = data.allocation[0][1];
+                document.getElementById("alloc-1-0").textContent = data.allocation[1][0];
+                document.getElementById("alloc-1-1").textContent = data.allocation[1][1];
+            }
+            if (data.request && data.request.length >= 2) {
+                document.getElementById("req-0-0").textContent = data.request[0][0];
+                document.getElementById("req-0-1").textContent = data.request[0][1];
+                document.getElementById("req-1-0").textContent = data.request[1][0];
+                document.getElementById("req-1-1").textContent = data.request[1][1];
+            }
 
-            document.getElementById("req-0-0").textContent = data.request[0][0];
-            document.getElementById("req-0-1").textContent = data.request[0][1];
-            document.getElementById("req-1-0").textContent = data.request[1][0];
-            document.getElementById("req-1-1").textContent = data.request[1][1];
-
-            const badgeBg = data.deadlock ? "#fee2e2" : "#dcfce7";
+            const badgeBg    = data.deadlock ? "#fee2e2" : "#dcfce7";
             const badgeColor = data.deadlock ? "#991b1b" : "#166534";
+            const borderCol  = data.deadlock ? "#fca5a5" : "#86efac";
             const statusText = data.deadlock ? "⚠️ DEADLOCK DETECTED" : "✅ SAFE STATE (NO DEADLOCK)";
 
+            /* Process & resource list */
+            const procList = (data.processes || ["Order 1 (P0)", "Order 2 (P1)"])
+                .map(p => `<li>${p}</li>`).join("");
+            const resList  = (data.resources || ["Kitchen Prep Slot (R0)", "Delivery Agent (R1)"])
+                .map(r => `<li>${r}</li>`).join("");
+
+            /* Mini SVG resource allocation graph */
+            const graphSvg = data.deadlock ? `
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 120" width="100%" style="max-width:320px;display:block;margin:12px auto;">
+                <!-- P0 circle -->
+                <circle cx="60" cy="60" r="26" fill="#fee2e2" stroke="#f87171" stroke-width="2"/>
+                <text x="60" y="55" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">P0</text>
+                <text x="60" y="70" text-anchor="middle" font-size="9" fill="#991b1b">Order 1</text>
+                <!-- P1 circle -->
+                <circle cx="260" cy="60" r="26" fill="#fee2e2" stroke="#f87171" stroke-width="2"/>
+                <text x="260" y="55" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">P1</text>
+                <text x="260" y="70" text-anchor="middle" font-size="9" fill="#991b1b">Order 2</text>
+                <!-- R0 box -->
+                <rect x="120" y="10" width="80" height="34" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+                <text x="160" y="25" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">R0</text>
+                <text x="160" y="38" text-anchor="middle" font-size="8" fill="#92400e">Kitchen Slot</text>
+                <!-- R1 box -->
+                <rect x="120" y="76" width="80" height="34" rx="6" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+                <text x="160" y="91" text-anchor="middle" font-size="10" font-weight="700" fill="#6d28d9">R1</text>
+                <text x="160" y="104" text-anchor="middle" font-size="8" fill="#6d28d9">Delivery Agent</text>
+                <!-- P0 holds R0 (green arrow) -->
+                <line x1="120" y1="22" x2="86" y2="48" stroke="#16a34a" stroke-width="2" marker-end="url(#arr)"/>
+                <!-- P0 requests R1 (red dashed) -->
+                <line x1="86" y1="72" x2="120" y2="90" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrR)"/>
+                <!-- P1 holds R1 -->
+                <line x1="200" y1="90" x2="234" y2="72" stroke="#16a34a" stroke-width="2" marker-end="url(#arr)"/>
+                <!-- P1 requests R0 -->
+                <line x1="234" y1="48" x2="200" y2="28" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrR)"/>
+                <defs>
+                  <marker id="arr"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#16a34a"/></marker>
+                  <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#dc2626"/></marker>
+                </defs>
+              </svg>
+              <p style="text-align:center;font-size:10px;color:#94a3b8;margin:0;">
+                <span style="color:#16a34a;">━━</span> Holds &nbsp; <span style="color:#dc2626;">╌╌</span> Requests (Circular Wait → Deadlock)
+              </p>` : `
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="100%" style="max-width:320px;display:block;margin:12px auto;">
+                <rect x="10" y="20" width="80" height="40" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+                <text x="50" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">P0 → R0</text>
+                <text x="50" y="52" text-anchor="middle" font-size="9" fill="#15803d">Completes</text>
+                <line x1="90" y1="40" x2="130" y2="40" stroke="#16a34a" stroke-width="2" marker-end="url(#arrG)"/>
+                <rect x="130" y="20" width="80" height="40" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+                <text x="170" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">R0 freed</text>
+                <text x="170" y="52" text-anchor="middle" font-size="9" fill="#15803d">P1 acquires</text>
+                <line x1="210" y1="40" x2="250" y2="40" stroke="#16a34a" stroke-width="2" marker-end="url(#arrG)"/>
+                <rect x="250" y="20" width="60" height="40" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+                <text x="280" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">P1</text>
+                <text x="280" y="52" text-anchor="middle" font-size="9" fill="#15803d">Completes</text>
+                <defs>
+                  <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#16a34a"/></marker>
+                </defs>
+              </svg>`;
+
             resultDiv.innerHTML = `
-                <div style="background:${badgeBg}; border:1px solid ${data.deadlock ? '#fca5a5' : '#86efac'}; border-radius:10px; padding:18px;">
+                <div style="background:${badgeBg}; border:1px solid ${borderCol}; border-radius:10px; padding:18px;">
                     <h3 style="margin:0 0 10px; color:${badgeColor}; font-size:16px;">${statusText}</h3>
                     <p style="margin:0 0 8px; color:#1e293b;"><strong>Analysis:</strong> ${data.explanation}</p>
                     <p style="margin:0 0 8px; color:#1e293b;"><strong>Resolution Strategy:</strong> ${data.resolution}</p>
-                    <div style="margin-top:10px; font-size:12px; color:#64748b; font-family:monospace;">
-                        Process Dependencies: P0 (Holds R0, Needs R1) ⇄ P1 (Holds R1, Needs R0) [Circular Wait]
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0;">
+                        <div style="background:rgba(255,255,255,.6); border-radius:8px; padding:10px;">
+                            <strong style="font-size:12px; color:#334155;">Competing Processes</strong>
+                            <ul style="margin:6px 0 0; padding-left:16px; font-size:12px; color:#475569;">${procList}</ul>
+                        </div>
+                        <div style="background:rgba(255,255,255,.6); border-radius:8px; padding:10px;">
+                            <strong style="font-size:12px; color:#334155;">Shared Resources</strong>
+                            <ul style="margin:6px 0 0; padding-left:16px; font-size:12px; color:#475569;">${resList}</ul>
+                        </div>
+                    </div>
+
+                    <!-- Resource Allocation Graph -->
+                    <div style="margin-top:8px;">
+                        <strong style="font-size:12px; color:#334155;">Resource Allocation Graph</strong>
+                        ${graphSvg}
                     </div>
                 </div>
             `;

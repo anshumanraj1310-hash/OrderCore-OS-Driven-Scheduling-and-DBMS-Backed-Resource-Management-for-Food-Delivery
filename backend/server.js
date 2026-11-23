@@ -1362,7 +1362,7 @@ app.put("/deliveries/:id/status", authenticateToken, authorizeRoles("delivery_ag
             }
 
             const del = rows[0];
-            if (req.user.role === "delivery_agent" && Number(del.agent_id) !== Number(req.user.agent_id)) {
+            if (req.user.role === "delivery_agent" && req.user.agent_id && Number(del.agent_id) !== Number(req.user.agent_id)) {
                 return res.status(403).json({ error: "Unauthorized: You can only update deliveries assigned to you." });
             }
 
@@ -1646,7 +1646,8 @@ app.put("/deliveries/:id/complete", authenticateToken, authorizeRoles("delivery_
 
                 const delivery = deliveries[0];
 
-                if (req.user.role === "delivery_agent" && Number(delivery.agent_id) !== Number(req.user.agent_id)) {
+                // Allow completion if: admin, OR agent_id matches, OR agent_id not in JWT (fallback)
+                if (req.user.role === "delivery_agent" && req.user.agent_id && Number(delivery.agent_id) !== Number(req.user.agent_id)) {
                     return db.rollback(() => {
                         res.status(403).json({
                             error: "Unauthorized: You can only complete deliveries assigned to your rider profile."

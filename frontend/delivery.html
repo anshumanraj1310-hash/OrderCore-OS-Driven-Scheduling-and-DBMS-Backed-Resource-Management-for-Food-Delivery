@@ -894,6 +894,9 @@
             <button class="btn-action btn-start" onclick="startDelivery(${d.delivery_id})">
               🚀 Start Delivery
             </button>
+            <button class="btn-action btn-deliver" onclick="completeDeliveryTrip(${d.delivery_id})">
+              ✅ Mark Delivered
+            </button>
           </div>`;
       } else if (d.status === "Out for Delivery") {
         actionHtml = `
