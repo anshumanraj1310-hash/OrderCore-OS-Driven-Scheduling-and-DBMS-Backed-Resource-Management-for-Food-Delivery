@@ -238,7 +238,14 @@ db.connect(async (err) => {
             (1, 1, 1, 0, 5, 4, 2, 'Waiting'),
             (2, 2, 1, 1, 3, 5, 1, 'Waiting'),
             (3, 3, 2, 2, 7, 3, 3, 'Waiting'),
-            (4, 4, 3, 3, 4, 6, 2, 'Waiting')
+            (4, 4, 3, 3, 4, 6, 2, 'Waiting'),
+            (5, 1, 4, 4, 6, 5, 1, 'Waiting'),
+            (6, 2, 5, 5, 3, 4, 2, 'Waiting'),
+            (7, 3, 6, 6, 4, 5, 1, 'Waiting'),
+            (8, 4, 7, 7, 2, 3, 2, 'Waiting'),
+            (9, 1, 8, 8, 8, 6, 1, 'Waiting'),
+            (10, 2, 9, 9, 5, 4, 2, 'Waiting'),
+            (11, 3, 10, 10, 6, 5, 1, 'Waiting')
             ON DUPLICATE KEY UPDATE status=VALUES(status), priority=VALUES(priority);
         `);
 
@@ -247,7 +254,14 @@ db.connect(async (err) => {
             (1, 1, 1, 2),
             (2, 2, 2, 1),
             (3, 3, 7, 2),
-            (4, 4, 13, 1)
+            (4, 4, 13, 1),
+            (5, 5, 21, 1),
+            (6, 6, 29, 2),
+            (7, 7, 37, 2),
+            (8, 8, 45, 1),
+            (9, 9, 57, 1),
+            (10, 10, 63, 2),
+            (11, 11, 69, 1)
             ON DUPLICATE KEY UPDATE quantity=VALUES(quantity);
         `);
 

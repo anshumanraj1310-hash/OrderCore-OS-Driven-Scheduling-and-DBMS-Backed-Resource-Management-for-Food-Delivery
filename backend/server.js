@@ -565,6 +565,56 @@ function ensureCatalogData() {
             } else {
                 console.log("✓ Full 10-outlet restaurant & 74-dish food catalog synchronized in MySQL.");
             }
+
+            // Seed sample active orders for all restaurants (1 to 10) so every outlet has incoming KOT orders
+            seedAllRestaurantOrders();
+        });
+    });
+}
+
+function seedAllRestaurantOrders() {
+    const ordersSql = `
+        INSERT INTO Orders (order_id, customer_id, restaurant_id, arrival_time, prep_time, delivery_time, priority, status) VALUES
+        (1, 1, 1, 0, 5, 4, 2, 'Waiting'),
+        (2, 2, 1, 1, 3, 5, 1, 'Waiting'),
+        (3, 3, 2, 2, 7, 3, 3, 'Waiting'),
+        (4, 4, 3, 3, 4, 6, 2, 'Waiting'),
+        (5, 1, 4, 4, 6, 5, 1, 'Waiting'),
+        (6, 2, 5, 5, 3, 4, 2, 'Waiting'),
+        (7, 3, 6, 6, 4, 5, 1, 'Waiting'),
+        (8, 4, 7, 7, 2, 3, 2, 'Waiting'),
+        (9, 1, 8, 8, 8, 6, 1, 'Waiting'),
+        (10, 2, 9, 9, 5, 4, 2, 'Waiting'),
+        (11, 3, 10, 10, 6, 5, 1, 'Waiting')
+        ON DUPLICATE KEY UPDATE status=VALUES(status), priority=VALUES(priority);
+    `;
+
+    db.query(ordersSql, (oErr) => {
+        if (oErr) {
+            console.log("Note on Orders sync:", oErr.message);
+            return;
+        }
+
+        const itemsSql = `
+            INSERT INTO Order_Items (order_item_id, order_id, food_id, quantity) VALUES
+            (1, 1, 1, 2),
+            (2, 2, 2, 1),
+            (3, 3, 7, 2),
+            (4, 4, 13, 1),
+            (5, 5, 21, 1),
+            (6, 6, 29, 2),
+            (7, 7, 37, 2),
+            (8, 8, 45, 1),
+            (9, 9, 57, 1),
+            (10, 10, 63, 2),
+            (11, 11, 69, 1)
+            ON DUPLICATE KEY UPDATE quantity=VALUES(quantity);
+        `;
+
+        db.query(itemsSql, (iErr) => {
+            if (!iErr) {
+                console.log("✓ Active kitchen orders seeded across all 10 restaurant outlets.");
+            }
         });
     });
 }
