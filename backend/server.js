@@ -344,6 +344,36 @@ const defaultSeedUsers = [
         restaurant_id: 7,
         agent_id: null,
         status: "Approved"
+    },
+    {
+        name: "Biryani Blues Manager",
+        email: "biryaniblues@example.com",
+        password_hash: "$2b$10$fJW0f9KNGvccSuFWqw9SXuut38KWL.YDg9an1POvqFsw7jSRDl3Tm", // password123
+        role: "restaurant",
+        customer_id: null,
+        restaurant_id: 8,
+        agent_id: null,
+        status: "Approved"
+    },
+    {
+        name: "Chai & Tandoor Manager",
+        email: "chaitandoor@example.com",
+        password_hash: "$2b$10$fJW0f9KNGvccSuFWqw9SXuut38KWL.YDg9an1POvqFsw7jSRDl3Tm", // password123
+        role: "restaurant",
+        customer_id: null,
+        restaurant_id: 9,
+        agent_id: null,
+        status: "Approved"
+    },
+    {
+        name: "Wok & Roll Manager",
+        email: "wokroll@example.com",
+        password_hash: "$2b$10$fJW0f9KNGvccSuFWqw9SXuut38KWL.YDg9an1POvqFsw7jSRDl3Tm", // password123
+        role: "restaurant",
+        customer_id: null,
+        restaurant_id: 10,
+        agent_id: null,
+        status: "Approved"
     }
 ];
 

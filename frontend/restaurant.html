@@ -639,6 +639,9 @@
                 <div class="demo-chip" onclick="fillRestDemo('southbite')">🍛 South Bite</div>
                 <div class="demo-chip" onclick="fillRestDemo('rollsnmore')">🌯 Rolls N More</div>
                 <div class="demo-chip" onclick="fillRestDemo('dessertden')">🍰 Dessert Den</div>
+                <div class="demo-chip" onclick="fillRestDemo('biryaniblues')">🍚 Biryani Blues</div>
+                <div class="demo-chip" onclick="fillRestDemo('chaitandoor')">☕ Chai & Tandoor</div>
+                <div class="demo-chip" onclick="fillRestDemo('wokroll')">🥢 Wok & Roll</div>
             </div>
 
             <div class="toggle-link" id="restToggleLink" onclick="toggleRestRegMode()">
@@ -894,13 +897,16 @@
     /* ── DEMO CHIPS ── */
     function fillRestDemo(key) {
         const emailMap = {
-            "pizzahub":    "pizzahub@example.com",
-            "burgerpoint": "burgerpoint@example.com",
-            "foodcorner":  "foodcorner@example.com",
-            "spicegarden": "spicegarden@example.com",
-            "southbite":   "southbite@example.com",
-            "rollsnmore":  "rollsnmore@example.com",
-            "dessertden":  "dessertden@example.com"
+            "pizzahub":     "pizzahub@example.com",
+            "burgerpoint":  "burgerpoint@example.com",
+            "foodcorner":   "foodcorner@example.com",
+            "spicegarden":  "spicegarden@example.com",
+            "southbite":    "southbite@example.com",
+            "rollsnmore":   "rollsnmore@example.com",
+            "dessertden":   "dessertden@example.com",
+            "biryaniblues": "biryaniblues@example.com",
+            "chaitandoor":  "chaitandoor@example.com",
+            "wokroll":      "wokroll@example.com"
         };
         document.getElementById("restEmailInput").value    = emailMap[key] || "pizzahub@example.com";
         document.getElementById("restPasswordInput").value = "password123";

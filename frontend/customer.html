@@ -1390,7 +1390,7 @@
             currentUser = JSON.parse(sessionStorage.getItem("ordercoreUser") || "null");
         } catch(e) {}
 
-        /* ── DEFAULT 7 RESTAURANTS (NEVER EMPTY) ── */
+        /* ── DEFAULT 10 RESTAURANTS (NEVER EMPTY) ── */
         const DEFAULT_RESTAURANTS = [
             { restaurant_id: 1, name: "Pizza Hub", location: "Rajpur Road, Dehradun", cuisine: "Italian, Pizza, Fast Food", rating: "4.5", time: "25-30 min", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&auto=format&fit=crop" },
             { restaurant_id: 2, name: "Burger Point", location: "Clock Tower, Dehradun", cuisine: "American, Burgers, Shakes", rating: "4.3", time: "20-25 min", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop" },
@@ -1398,10 +1398,13 @@
             { restaurant_id: 4, name: "Spice Garden", location: "Sahastradhara Road, Dehradun", cuisine: "Mughlai, North Indian, Tandoor", rating: "4.6", time: "35-40 min", img: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600&auto=format&fit=crop" },
             { restaurant_id: 5, name: "South Bite", location: "GMS Road, Dehradun", cuisine: "Authentic South Indian, Dosa", rating: "4.4", time: "20-30 min", img: "https://images.unsplash.com/photo-1630383249896-424e482df921?w=600&auto=format&fit=crop" },
             { restaurant_id: 6, name: "Rolls N More", location: "Ballupur Chowk, Dehradun", cuisine: "Kolkata Rolls, Frankies, Wraps", rating: "4.3", time: "15-25 min", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=600&auto=format&fit=crop" },
-            { restaurant_id: 7, name: "Dessert Den", location: "Paltan Bazaar, Dehradun", cuisine: "Ice Cream, Waffles, Bakery", rating: "4.7", time: "15-20 min", img: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&auto=format&fit=crop" }
+            { restaurant_id: 7, name: "Dessert Den", location: "Paltan Bazaar, Dehradun", cuisine: "Ice Cream, Waffles, Bakery", rating: "4.7", time: "15-20 min", img: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&auto=format&fit=crop" },
+            { restaurant_id: 8, name: "Biryani Blues", location: "Astley Hall, Dehradun", cuisine: "Hyderabadi Biryani, Mughlai, Kebabs", rating: "4.6", time: "25-35 min", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop" },
+            { restaurant_id: 9, name: "Chai & Tandoor", location: "Chakrata Road, Dehradun", cuisine: "Street Food, Tandoori, Kulhad Chai", rating: "4.4", time: "20-30 min", img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop" },
+            { restaurant_id: 10, name: "Wok & Roll Asian", location: "Jakhan, Dehradun", cuisine: "Pan-Asian, Dimsums, Hakka Noodles", rating: "4.5", time: "25-30 min", img: "https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?w=600&auto=format&fit=crop" }
         ];
 
-        /* ── COMPLETE 56 FOOD DISHES CATALOG ── */
+        /* ── COMPLETE 74 FOOD DISHES CATALOG ── */
         const DEFAULT_FOOD_CATALOG = [
             { food_id: 1, restaurant_id: 1, restaurant_name: "Pizza Hub", name: "Margherita Pizza", price: 250.00 },
             { food_id: 2, restaurant_id: 1, restaurant_name: "Pizza Hub", name: "Farmhouse Pizza", price: 350.00 },
@@ -1458,7 +1461,25 @@
             { food_id: 49, restaurant_id: 7, restaurant_name: "Dessert Den", name: "Vanilla Ice Cream Sundae", price: 140.00 },
             { food_id: 50, restaurant_id: 7, restaurant_name: "Dessert Den", name: "Strawberry Cheesecake", price: 200.00 },
             { food_id: 51, restaurant_id: 7, restaurant_name: "Dessert Den", name: "Cold Coffee", price: 110.00 },
-            { food_id: 52, restaurant_id: 7, restaurant_name: "Dessert Den", name: "Hot Chocolate", price: 120.00 }
+            { food_id: 52, restaurant_id: 7, restaurant_name: "Dessert Den", name: "Hot Chocolate", price: 120.00 },
+            { food_id: 57, restaurant_id: 8, restaurant_name: "Biryani Blues", name: "Hyderabadi Chicken Dum Biryani", price: 320.00 },
+            { food_id: 58, restaurant_id: 8, restaurant_name: "Biryani Blues", name: "Mutton Lucknowi Biryani", price: 420.00 },
+            { food_id: 59, restaurant_id: 8, restaurant_name: "Biryani Blues", name: "Veg Handi Biryani", price: 240.00 },
+            { food_id: 60, restaurant_id: 8, restaurant_name: "Biryani Blues", name: "Mirchi Ka Salan", price: 60.00 },
+            { food_id: 61, restaurant_id: 8, restaurant_name: "Biryani Blues", name: "Boondi Raita", price: 50.00 },
+            { food_id: 62, restaurant_id: 8, restaurant_name: "Biryani Blues", name: "Shahi Tukda", price: 110.00 },
+            { food_id: 63, restaurant_id: 9, restaurant_name: "Chai & Tandoor", name: "Kulhad Masala Chai", price: 50.00 },
+            { food_id: 64, restaurant_id: 9, restaurant_name: "Chai & Tandoor", name: "Amritsari Kulcha with Chole", price: 160.00 },
+            { food_id: 65, restaurant_id: 9, restaurant_name: "Chai & Tandoor", name: "Tandoori Soya Chaap", price: 210.00 },
+            { food_id: 66, restaurant_id: 9, restaurant_name: "Chai & Tandoor", name: "Paneer Tikka Platter", price: 280.00 },
+            { food_id: 67, restaurant_id: 9, restaurant_name: "Chai & Tandoor", name: "Stuffed Garlic Naan", price: 70.00 },
+            { food_id: 68, restaurant_id: 9, restaurant_name: "Chai & Tandoor", name: "Kesar Pista Kulfi", price: 85.00 },
+            { food_id: 69, restaurant_id: 10, restaurant_name: "Wok & Roll Asian", name: "Veg Hakka Noodles", price: 170.00 },
+            { food_id: 70, restaurant_id: 10, restaurant_name: "Wok & Roll Asian", name: "Chilli Chicken Dry", price: 280.00 },
+            { food_id: 71, restaurant_id: 10, restaurant_name: "Wok & Roll Asian", name: "Veg Dimsums (6 Pcs)", price: 190.00 },
+            { food_id: 72, restaurant_id: 10, restaurant_name: "Wok & Roll Asian", name: "Chicken Steamed Momos", price: 220.00 },
+            { food_id: 73, restaurant_id: 10, restaurant_name: "Wok & Roll Asian", name: "Manchurian Gravy with Fried Rice", price: 240.00 },
+            { food_id: 74, restaurant_id: 10, restaurant_name: "Wok & Roll Asian", name: "Honey Chilli Potato", price: 180.00 }
         ];
 
         let allFoods = [...DEFAULT_FOOD_CATALOG];
@@ -1512,9 +1533,26 @@
             "Chocolate Brownie": "https://images.unsplash.com/photo-1564355808539-22fda35bed7e?w=500&auto=format&fit=crop",
             "Tiramisu": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=500&auto=format&fit=crop",
             "Mango Kulfi": "https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=500&auto=format&fit=crop",
-            "Belgian Waffle": "https://images.unsplash.com/photo-1562376552-0d160a2f238d?w=500&auto=format&fit=crop"
+            "Belgian Waffle": "https://images.unsplash.com/photo-1562376552-0d160a2f238d?w=500&auto=format&fit=crop",
+            "Hyderabadi Chicken Dum Biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop",
+            "Mutton Lucknowi Biryani": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500&auto=format&fit=crop",
+            "Veg Handi Biryani": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&auto=format&fit=crop",
+            "Kulhad Masala Chai": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop",
+            "Amritsari Kulcha with Chole": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop",
+            "Tandoori Soya Chaap": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500&auto=format&fit=crop",
+            "Paneer Tikka Platter": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=500&auto=format&fit=crop",
+            "Veg Hakka Noodles": "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop",
+            "Chilli Chicken Dry": "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=500&auto=format&fit=crop",
+            "Veg Dimsums (6 Pcs)": "https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?w=500&auto=format&fit=crop",
+            "Chicken Steamed Momos": "https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?w=500&auto=format&fit=crop",
+            "Manchurian Gravy with Fried Rice": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=500&auto=format&fit=crop",
+            "Honey Chilli Potato": "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop"
         };
-        const NON_VEG_ITEMS = ["Crispy Chicken Burger", "Chicken Biryani", "Butter Chicken", "Chicken Tikka (6 Pcs)", "BBQ Chicken Pizza", "Double Patty Burger", "Chicken Tikka Roll", "Egg Roll"];
+        const NON_VEG_ITEMS = [
+            "Crispy Chicken Burger", "Chicken Biryani", "Butter Chicken", "Chicken Tikka (6 Pcs)",
+            "BBQ Chicken Pizza", "Double Patty Burger", "Chicken Tikka Roll", "Egg Roll",
+            "Hyderabadi Chicken Dum Biryani", "Mutton Lucknowi Biryani", "Chilli Chicken Dry", "Chicken Steamed Momos"
+        ];
         const DEFAULT_FOOD_IMG = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop";
 
         function showToast(msg) {

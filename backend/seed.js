@@ -126,7 +126,10 @@ db.connect(async (err) => {
             (4, 'Spice Garden', 'Sahastradhara Road, Dehradun'),
             (5, 'South Bite', 'GMS Road, Dehradun'),
             (6, 'Rolls N More', 'Ballupur Chowk, Dehradun'),
-            (7, 'Dessert Den', 'Paltan Bazaar, Dehradun')
+            (7, 'Dessert Den', 'Paltan Bazaar, Dehradun'),
+            (8, 'Biryani Blues', 'Astley Hall, Dehradun'),
+            (9, 'Chai & Tandoor', 'Chakrata Road, Dehradun'),
+            (10, 'Wok & Roll Asian', 'Jakhan, Dehradun')
             ON DUPLICATE KEY UPDATE name=VALUES(name), location=VALUES(location);
         `);
 
@@ -207,7 +210,25 @@ db.connect(async (err) => {
             (53, 1, 'BBQ Chicken Pizza', 420.00),
             (54, 1, 'Pasta Arabiata', 220.00),
             (55, 2, 'Double Patty Burger', 260.00),
-            (56, 2, 'Onion Rings', 90.00)
+            (56, 2, 'Onion Rings', 90.00),
+            (57, 8, 'Hyderabadi Chicken Dum Biryani', 320.00),
+            (58, 8, 'Mutton Lucknowi Biryani', 420.00),
+            (59, 8, 'Veg Handi Biryani', 240.00),
+            (60, 8, 'Mirchi Ka Salan', 60.00),
+            (61, 8, 'Boondi Raita', 50.00),
+            (62, 8, 'Shahi Tukda', 110.00),
+            (63, 9, 'Kulhad Masala Chai', 50.00),
+            (64, 9, 'Amritsari Kulcha with Chole', 160.00),
+            (65, 9, 'Tandoori Soya Chaap', 210.00),
+            (66, 9, 'Paneer Tikka Platter', 280.00),
+            (67, 9, 'Stuffed Garlic Naan', 70.00),
+            (68, 9, 'Kesar Pista Kulfi', 85.00),
+            (69, 10, 'Veg Hakka Noodles', 170.00),
+            (70, 10, 'Chilli Chicken Dry', 280.00),
+            (71, 10, 'Veg Dimsums (6 Pcs)', 190.00),
+            (72, 10, 'Chicken Steamed Momos', 220.00),
+            (73, 10, 'Manchurian Gravy with Fried Rice', 240.00),
+            (74, 10, 'Honey Chilli Potato', 180.00)
             ON DUPLICATE KEY UPDATE name=VALUES(name), price=VALUES(price);
         `);
 
@@ -255,7 +276,10 @@ db.connect(async (err) => {
             { name: "Spice Garden Manager", email: "spicegarden@example.com", hash: passHash, role: "restaurant", cid: null, rid: 4, aid: null },
             { name: "South Bite Manager", email: "southbite@example.com", hash: passHash, role: "restaurant", cid: null, rid: 5, aid: null },
             { name: "Rolls N More Manager", email: "rollsnmore@example.com", hash: passHash, role: "restaurant", cid: null, rid: 6, aid: null },
-            { name: "Dessert Den Manager", email: "dessertden@example.com", hash: passHash, role: "restaurant", cid: null, rid: 7, aid: null }
+            { name: "Dessert Den Manager", email: "dessertden@example.com", hash: passHash, role: "restaurant", cid: null, rid: 7, aid: null },
+            { name: "Biryani Blues Manager", email: "biryaniblues@example.com", hash: passHash, role: "restaurant", cid: null, rid: 8, aid: null },
+            { name: "Chai & Tandoor Manager", email: "chaitandoor@example.com", hash: passHash, role: "restaurant", cid: null, rid: 9, aid: null },
+            { name: "Wok & Roll Manager", email: "wokroll@example.com", hash: passHash, role: "restaurant", cid: null, rid: 10, aid: null }
         ];
 
         for (const u of users) {
