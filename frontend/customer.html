@@ -1110,9 +1110,10 @@
                 <div class="cat-chip active" onclick="filterCategory('All', this)">🍽️ All Dishes</div>
                 <div class="cat-chip" onclick="filterCategory('Pizza', this)">🍕 Pizza</div>
                 <div class="cat-chip" onclick="filterCategory('Burger', this)">🍔 Burgers</div>
-                <div class="cat-chip" onclick="filterCategory('Biryani', this)">🍛 Biryani</div>
+                <div class="cat-chip" onclick="filterCategory('Biryani', this)">🍚 Biryani</div>
                 <div class="cat-chip" onclick="filterCategory('North Indian', this)">🍲 North Indian</div>
                 <div class="cat-chip" onclick="filterCategory('South Indian', this)">🌿 South Indian</div>
+                <div class="cat-chip" onclick="filterCategory('Asian', this)">🥢 Pan-Asian</div>
                 <div class="cat-chip" onclick="filterCategory('Rolls', this)">🌯 Rolls & Wraps</div>
                 <div class="cat-chip" onclick="filterCategory('Dessert', this)">🍰 Desserts</div>
                 <div class="cat-chip" onclick="filterCategory('Beverage', this)">☕ Beverages</div>
@@ -1805,7 +1806,48 @@
 
             // Category Filter
             if (activeCategory !== "All") {
-                filtered = filtered.filter(f => f.name.toLowerCase().includes(activeCategory.toLowerCase()));
+                const catLower = activeCategory.toLowerCase();
+                filtered = filtered.filter(f => {
+                    const fname = f.name.toLowerCase();
+                    const rname = (f.restaurant_name || "").toLowerCase();
+
+                    if (catLower === "pizza") {
+                        return fname.includes("pizza") || fname.includes("breadsticks") || fname.includes("pasta");
+                    }
+                    if (catLower === "burger") {
+                        return fname.includes("burger") || fname.includes("fries") || fname.includes("shake") || fname.includes("onion rings");
+                    }
+                    if (catLower === "biryani") {
+                        return fname.includes("biryani") || fname.includes("salan") || fname.includes("raita") || fname.includes("tukda");
+                    }
+                    if (catLower === "north indian") {
+                        return fname.includes("paneer") || fname.includes("chicken") || fname.includes("dal") ||
+                               fname.includes("naan") || fname.includes("roti") || fname.includes("curry") ||
+                               fname.includes("kulcha") || fname.includes("chaap") || rname.includes("spice garden") || rname.includes("chai & tandoor");
+                    }
+                    if (catLower === "south indian") {
+                        return fname.includes("dosa") || fname.includes("idli") || fname.includes("vada") ||
+                               fname.includes("uttapam") || fname.includes("pongal") || fname.includes("sambar") ||
+                               fname.includes("filter coffee") || rname.includes("south bite");
+                    }
+                    if (catLower === "rolls") {
+                        return fname.includes("roll") || fname.includes("paratha") || fname.includes("frankie") || rname.includes("rolls n more");
+                    }
+                    if (catLower === "dessert") {
+                        return fname.includes("cake") || fname.includes("brownie") || fname.includes("tiramisu") ||
+                               fname.includes("kulfi") || fname.includes("waffle") || fname.includes("sundae") ||
+                               fname.includes("jamun") || fname.includes("tukda") || rname.includes("dessert den");
+                    }
+                    if (catLower === "beverage") {
+                        return fname.includes("pepsi") || fname.includes("shake") || fname.includes("lassi") ||
+                               fname.includes("coffee") || fname.includes("chai") || fname.includes("chocolate");
+                    }
+                    if (catLower === "asian") {
+                        return fname.includes("noodles") || fname.includes("rice") || fname.includes("momos") ||
+                               fname.includes("dimsums") || fname.includes("manchurian") || fname.includes("chilli") || rname.includes("wok");
+                    }
+                    return fname.includes(catLower) || rname.includes(catLower);
+                });
             }
 
             if (filtered.length === 0) {
