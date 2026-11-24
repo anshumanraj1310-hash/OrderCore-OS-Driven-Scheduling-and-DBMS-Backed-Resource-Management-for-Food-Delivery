@@ -431,17 +431,21 @@ function ensureUsersTableAndSeeds() {
             return;
         }
 
-        // Schema migration: add created_at to Orders if missing
-        db.query(
-            "ALTER TABLE Orders ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
-            (alterErr) => {
-                if (alterErr && !alterErr.message.includes("Duplicate column")) {
-                    console.log("Note on Orders.created_at migration:", alterErr.message);
-                } else {
-                    console.log("✓ Orders.created_at column ensured.");
-                }
+        // Schema migration: add created_at to Orders if missing (compatible with all MySQL / MariaDB versions)
+        db.query("SHOW COLUMNS FROM Orders LIKE 'created_at'", (colErr, cols) => {
+            if (!colErr && cols && cols.length === 0) {
+                db.query(
+                    "ALTER TABLE Orders ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    (alterErr) => {
+                        if (alterErr && !alterErr.message.includes("Duplicate column")) {
+                            console.log("Note on Orders.created_at migration:", alterErr.message);
+                        } else {
+                            console.log("✓ Orders.created_at column added successfully.");
+                        }
+                    }
+                );
             }
-        );
+        });
 
         defaultSeedUsers.forEach((u) => {
             seedDefaultUser(u);
